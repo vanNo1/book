@@ -2,14 +2,18 @@ package com.van.book3.controller;
 
 import com.google.gson.Gson;
 import com.van.book3.entity.Openid;
+import com.van.book3.entity.Sign;
+import com.van.book3.serviceimpl.SignServiceImpl;
 import com.van.book3.utils.OpenIdVOUtil;
 import com.van.book3.vo.OpenIdVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,9 +21,12 @@ import java.util.Map;
  * @author Van
  * @date 2020/3/6 - 12:44
  */
+@Slf4j
 @RestController
 @RequestMapping("/openId")
 public class loginController {
+    @Resource
+    SignServiceImpl signService;
     @RequestMapping("/get")
     public OpenIdVO<Openid> login(@RequestParam String code,@RequestParam String appId, @RequestParam String  secret){
 
@@ -37,7 +44,12 @@ public class loginController {
         //1.if openid is not null
         if (openid.getOpenid()!=null){
             OpenIdVO openIdVO= OpenIdVOUtil.success(openid);
-            System.out.println(openIdVO);
+            log.info(openIdVO.toString());
+            //build Sign entity
+            Sign sign=new Sign();
+            sign.setOpenId(openid.getOpenid());
+            signService.insert(sign);
+            //.............................insert to database
             return openIdVO;
 
         }
