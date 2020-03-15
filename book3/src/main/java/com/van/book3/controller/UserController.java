@@ -1,15 +1,16 @@
 package com.van.book3.controller;
 
-import com.van.book3.dao.UserMapper;
+import com.van.book3.common.ServerResponse;
 import com.van.book3.entity.User;
 import com.van.book3.service.UserService;
-import com.van.book3.utils.RegisterVOUtil;
-import com.van.book3.vo.RegisterVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Van
@@ -17,20 +18,18 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping(value = "/user")
 public class UserController {
 @Resource
 private UserService userService;
 
-    @RequestMapping("/register")
-    public RegisterVO register(User user){
-        try{
-            userService.insert(user);
-            log.info("register success");
-            return RegisterVOUtil.success();
-        }catch (Exception e){
-            log.error("register error");
-            return RegisterVOUtil.error();
-        }
+    @RequestMapping(value = "/register",method = RequestMethod.POST)
+    public ServerResponse register(User user){
+    return userService.register(user);
     }
+    @RequestMapping("/day")
+    public ServerResponse getDay(String openId){
+    return userService.getDay(openId);
+    }
+
 }

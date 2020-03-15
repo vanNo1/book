@@ -1,7 +1,12 @@
 package com.van.book3.entity;
 
-import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 /**
  * @author Van
@@ -19,8 +24,10 @@ public class User {
     private String language;
     private String nickName;
     private String province;
-    private long createDt;
-    private long updateDt;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
     private String platform;
 
 }

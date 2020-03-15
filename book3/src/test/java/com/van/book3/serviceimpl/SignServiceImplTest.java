@@ -22,9 +22,7 @@ class SignServiceImplTest {
     private SignServiceImpl signService;
 @Test
     public void test() {
-    Sign sign=new Sign();
-    sign.setOpenId("000");
-    signService.insert(sign);
+
 
 }
 }

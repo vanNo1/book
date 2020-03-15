@@ -1,13 +1,17 @@
 package com.van.book3.serviceimpl;
 
+import com.google.gson.Gson;
+import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.SignMapper;
 import com.van.book3.entity.Sign;
 import com.van.book3.service.SignService;
-import com.van.book3.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Van
@@ -18,14 +22,29 @@ import javax.annotation.Resource;
 public class SignServiceImpl implements SignService {
     @Resource
     private SignMapper signMapper;
-    @Override
-    public void insert(Sign sign) {
-        try {
-            //get create time
-            sign.setCreateDt(DateUtil.now());
-            signMapper.insert(sign);
-        }catch (Exception e){
-           e.printStackTrace();
+
+    public ServerResponse getOpenId(String code,String appId,String secret){
+        Map<String ,String > params=new HashMap<>();
+        params.put("appId",appId);
+        params.put("secret",secret);
+        params.put("code",code);
+        String url="https://api.weixin.qq.com/sns/jscode2session?appid={appId}&secret={secret}&js_code={code}&grant_type=authorization_code";
+        RestTemplate restTemplate=new RestTemplate();
+        String openidString= restTemplate.getForObject(url,String.class,params);
+        //have already get openid.....................
+        Gson gson=new Gson();
+        Sign openid= gson.fromJson(openidString, Sign.class);
+        //translate to entity...........................
+        //1.if openid is not null
+        if (openid.getOpenId()!=null){
+            //build Sign entity
+            signMapper.insert(openid);
+            //.............................insert to database
+            return ServerResponse.success("获取openId成功",openid);
+
         }
+        //2. if openid is null
+        return ServerResponse.error("获取openId失败");
+
     }
 }
