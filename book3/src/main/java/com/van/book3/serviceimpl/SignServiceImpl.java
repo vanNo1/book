@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,20 +32,36 @@ public class SignServiceImpl implements SignService {
         String url="https://api.weixin.qq.com/sns/jscode2session?appid={appId}&secret={secret}&js_code={code}&grant_type=authorization_code";
         RestTemplate restTemplate=new RestTemplate();
         String openidString= restTemplate.getForObject(url,String.class,params);
+        log.info("have already get openid: ",openidString);
         //have already get openid.....................
         Gson gson=new Gson();
         Sign openid= gson.fromJson(openidString, Sign.class);
         //translate to entity...........................
         //1.if openid is not null
         if (openid.getOpenId()!=null){
-            //build Sign entity
-            signMapper.insert(openid);
-            //.............................insert to database
+            //1.if openid is not duplicate
+            if (!isDuplicate(openid.getOpenId())){
+                //build Sign entity
+                signMapper.insert(openid);
+                //.............................insert to database
+
+            }
+
             return ServerResponse.success("获取openId成功",openid);
 
         }
         //2. if openid is null
         return ServerResponse.error("获取openId失败");
 
+    }
+    public boolean isDuplicate(String openid){
+        Map map=new HashMap();
+        map.put("open_id",openid);
+        List<Sign>signList=signMapper.selectByMap(map);
+        if (signList.size()>0){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

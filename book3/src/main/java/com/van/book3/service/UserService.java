@@ -10,4 +10,6 @@ import com.van.book3.entity.User;
 public interface UserService {
     public ServerResponse register(User user);
     ServerResponse getDay(String openId);
+    User selectUserByOpenId(String openId);
+    boolean isDupilicate(String openId);
 }

@@ -23,9 +23,23 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
+    public boolean isDupilicate(String openId){
+        Map map=new HashMap();
+        map.put("open_id",openId);
+        List<User>userList=userMapper.selectByMap(map);
+        if (userList.size()>0){
+            return true;
+        }else {
+            return false;
+        }
+    }
     public ServerResponse register(User user){
         if (user.getOpenId()==null){
             return ServerResponse.error("未传openId");
+        }
+        //if user's is already register
+        if (isDupilicate(user.getOpenId())){
+            return ServerResponse.error("用户注册失败,用户已存在");
         }
       int count= userMapper.insert(user);
         if (count>0){
