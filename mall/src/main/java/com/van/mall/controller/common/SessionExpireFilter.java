@@ -15,6 +15,7 @@ import java.io.IOException;
 
 /**
  * @author Van
+
  * @date 2020/3/22 - 16:04
  */
 @Component
@@ -29,6 +30,7 @@ public class SessionExpireFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest=(HttpServletRequest)request;
         String loginToken= CookieUtil.readLoginToken(httpServletRequest);
+        //你存在，我就更新，不存在就不更新过期时间
         if (StringUtils.isNotEmpty(loginToken)){
             String userStr= RedisPoolUtil.get(loginToken);
             User user= JsonUtil.string2Object(userStr,User.class);

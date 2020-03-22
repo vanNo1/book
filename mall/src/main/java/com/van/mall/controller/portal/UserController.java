@@ -47,8 +47,7 @@ public class UserController {
         String loginToken=CookieUtil.readLoginToken(request);
         CookieUtil.delLoginToken(response,request);
         RedisPoolUtil.del(loginToken);
-        return ServerResponse.success(null);
-    }
+        return ServerResponse.success(null);}
 
     @RequestMapping(value = "/register.do",method = RequestMethod.POST)
     public ServerResponse register(User user){
