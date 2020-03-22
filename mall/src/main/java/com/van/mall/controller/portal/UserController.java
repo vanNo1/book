@@ -7,6 +7,7 @@ import com.van.mall.service.serviceImpl.UserServiceImpl;
 import com.van.mall.util.CookieUtil;
 import com.van.mall.util.JsonUtil;
 import com.van.mall.util.RedisPoolUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +28,7 @@ public class UserController {
     @Resource
     private UserServiceImpl userService;
 @RequestMapping(value = "/login.do",method = RequestMethod.POST)
-    public ServerResponse login(@RequestParam String username, @RequestParam String password, HttpSession session , HttpServletRequest request, HttpServletResponse httpServletResponse){
+    public ServerResponse login(@RequestParam String username, @RequestParam String password, HttpSession session , HttpServletResponse httpServletResponse){
 
     ServerResponse response=userService.login(username,password);
     if (response.isSuccess()){
@@ -41,9 +42,12 @@ public class UserController {
 }
 
     @RequestMapping(value = "/logout.do")
-    public ServerResponse logout(HttpSession session){
-    session.removeAttribute(Const.CURRENT_USER);
-    return ServerResponse.success(null);
+    public ServerResponse logout(HttpServletRequest request,HttpServletResponse response){
+//    session.removeAttribute(Const.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(request);
+        CookieUtil.delLoginToken(response,request);
+        RedisPoolUtil.del(loginToken);
+        return ServerResponse.success(null);
     }
 
     @RequestMapping(value = "/register.do",method = RequestMethod.POST)
@@ -103,8 +107,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/get_information.do")
-    public ServerResponse getInformation(HttpSession session){
-        User currentUser=(User)session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse getInformation(HttpSession session,HttpServletRequest request){
+//        User currentUser=(User)session.getAttribute(Const.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)){
+            return ServerResponse.error("用户未登录");
+        }
+        String userStr=RedisPoolUtil.get(loginToken);
+        User currentUser=JsonUtil.string2Object(userStr,User.class);
         if (currentUser==null){
             return ServerResponse.error("用户未登录");
         }

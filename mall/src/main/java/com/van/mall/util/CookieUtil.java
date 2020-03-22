@@ -42,7 +42,7 @@ public class CookieUtil {
 
     }
     public static void delLoginToken(HttpServletResponse response,HttpServletRequest request){
-        Cookie[] cookies=request.getCookies();
+         Cookie[] cookies=request.getCookies();
         if (cookies!=null){
             for (Cookie cookie : cookies) {
                 if (StringUtils.equals(cookie.getName(),COOKID_NAME)){

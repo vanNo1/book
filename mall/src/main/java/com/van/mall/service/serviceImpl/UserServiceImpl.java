@@ -119,7 +119,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse checkValid(String str, String type) {
-        if (type==""||type==" "){
+        if (StringUtils.isEmpty(str)||StringUtils.isEmpty(type)){
             return ServerResponse.error("参数错误");
         }
         if (type.equals(Const.EMAIL)){
