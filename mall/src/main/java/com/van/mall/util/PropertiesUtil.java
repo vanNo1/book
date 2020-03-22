@@ -28,13 +28,13 @@ public class PropertiesUtil {
     public static String getPropertity(String key){
         String value=properties.getProperty(key.trim());
         if (StringUtils.isNotBlank(value)){
-            return null;
+            return value.trim();
         }
-        return value.trim();
+        return null;
     }
     public static String getPropertity(String key,String defaultValue){
         String value=properties.getProperty(key.trim());
-        if (StringUtils.isNotBlank(value)){
+        if (!StringUtils.isNotBlank(value)){
             value=defaultValue;
         }
         return value.trim();

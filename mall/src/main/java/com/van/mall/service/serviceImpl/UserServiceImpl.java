@@ -88,7 +88,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.error("password is wrong!");
         }
         //find user...................
-        return ServerResponse.success(findUser(username,password));
+        return ServerResponse.success(findUser(username,md5password));
 
     }
 

@@ -17,6 +17,7 @@ public class LoginUtil {
         }else {
             return true;
         }
+
     }
     public static String getOpenId(HttpSession session){
         Sign sign=(Sign)session.getAttribute(Const.CURRENT_USER);

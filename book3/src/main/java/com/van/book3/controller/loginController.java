@@ -28,6 +28,7 @@ public class loginController {
         }
         ServerResponse<Sign> serverResponse= signService.getOpenId(code,appId,secret);
         session.setAttribute(Const.CURRENT_USER,serverResponse.getData());
+
         return serverResponse;
     }
 
