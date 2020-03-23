@@ -19,6 +19,13 @@
     </properties>
 
     <dependencies>
+        <!--springSession....................-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+            <version>1.2.1.RELEASE</version>
+        </dependency>
+        <!--........................................-->
     <!--deal with localdatetime to Serialization-->
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
@@ -38,7 +45,7 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>2.6.0</version>
+            <version>2.4.2</version>
         </dependency>
         <!--alipay component....................................................-->
         <dependency>

@@ -6,10 +6,8 @@ import com.van.mall.util.CookieUtil;
 import com.van.mall.util.JsonUtil;
 import com.van.mall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -18,8 +16,8 @@ import java.io.IOException;
 
  * @date 2020/3/22 - 16:04
  */
-@Component
-@WebFilter(urlPatterns = "*.do",filterName = "sessionExpireFilter")
+//@Component
+//@WebFilter(urlPatterns = "*.do",filterName = "sessionExpireFilter")
 public class SessionExpireFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
