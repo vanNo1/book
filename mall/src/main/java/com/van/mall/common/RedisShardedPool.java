@@ -1,9 +1,12 @@
 package com.van.mall.common;
 
 import com.van.mall.util.PropertiesUtil;
-import redis.clients.jedis.*;
-import redis.clients.util.Hashing;
-import redis.clients.util.Sharded;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisShardInfo;
+import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.ShardedJedisPool;
+import redis.clients.jedis.util.Hashing;
+import redis.clients.jedis.util.Sharded;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +50,11 @@ public class RedisShardedPool {
         return pool.getResource();
     }
     public static void returnBrokenResource(ShardedJedis jedis){
-        pool.returnBrokenResource(jedis);
+        returnBrokenResource(jedis);
+
     }
     public static void returnResource(ShardedJedis jedis){
-        pool.returnResource(jedis);
+        returnResource(jedis);
     }
 
     public static void main(String[] args) {

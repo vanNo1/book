@@ -28,7 +28,7 @@ public class UserSpringSessionController {
 
         ServerResponse response=userService.login(username,password);
         if (response.isSuccess()){
-        session.setAttribute("current_user",Const.CURRENT_USER);
+        session.setAttribute(Const.CURRENT_USER,response.getData());
             //sessionId= 3D5D2DBC9DF714996B58FA5297920E36
 //            CookieUtil.writeLoginToken(httpServletResponse,session.getId());
 //            RedisPoolUtil.setEx(session.getId(), JsonUtil.object2String(response.getData()), Const.ReidsCacheExTime.REDIS_SESSION_EXTIME);
