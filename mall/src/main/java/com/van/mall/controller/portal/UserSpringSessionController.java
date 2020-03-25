@@ -6,7 +6,6 @@ import com.van.mall.entity.User;
 import com.van.mall.service.serviceImpl.UserServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -24,8 +23,7 @@ public class UserSpringSessionController {
     @Resource
     private UserServiceImpl userService;
     @RequestMapping(value = "/login.do",method = RequestMethod.POST)
-    public ServerResponse login(@RequestParam String username, @RequestParam String password, HttpSession session , HttpServletResponse httpServletResponse){
-
+    public ServerResponse login(String username, String password, HttpSession session , HttpServletResponse httpServletResponse){
         ServerResponse response=userService.login(username,password);
         if (response.isSuccess()){
         session.setAttribute(Const.CURRENT_USER,response.getData());

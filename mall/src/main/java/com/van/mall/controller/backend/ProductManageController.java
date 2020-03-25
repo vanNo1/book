@@ -8,10 +8,7 @@ import com.van.mall.service.serviceImpl.FileServiceImpl;
 import com.van.mall.service.serviceImpl.ProductServiceImpl;
 import com.van.mall.service.serviceImpl.UserServiceImpl;
 import com.van.mall.util.PropertiesUtil;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -65,6 +62,20 @@ public class ProductManageController {
 
     @RequestMapping("/detail.do")
     public ServerResponse getDetail(HttpSession session , Integer productId){
+        User user=(User) session.getAttribute(Const.CURRENT_USER);
+        if (user==null){
+            return ServerResponse.error("请先登录");
+        }
+        if (userService.checkAdminRole(user).isSuccess()){
+            //to do logic
+            return productService.manageProductDetail(productId);
+
+        }else {
+            return ServerResponse.error("没有管理员权限");
+        }
+    }
+    @RequestMapping("/{productId}")
+    public ServerResponse getDetailRESTful(HttpSession session ,@PathVariable Integer productId){
         User user=(User) session.getAttribute(Const.CURRENT_USER);
         if (user==null){
             return ServerResponse.error("请先登录");

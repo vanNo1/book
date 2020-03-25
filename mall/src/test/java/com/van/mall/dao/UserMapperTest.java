@@ -1,7 +1,6 @@
 package com.van.mall.dao;
 
 import com.van.mall.entity.User;
-import com.van.mall.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,9 +19,11 @@ public class UserMapperTest {
     private UserMapper userMapper;
 @Test
     public void test(){
-    User user=userMapper.selectById(22);
-    String json= JsonUtil.object2String(user);
-    System.out.println(json);
+    User user=new User();
+    user.setUsername("jack");
+    user.setPassword("321");
+    userMapper.insert(user);
 }
+
 
 }
