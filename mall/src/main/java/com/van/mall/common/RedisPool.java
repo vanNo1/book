@@ -18,8 +18,8 @@ public class RedisPool {
     private static Integer minIdle=Integer.parseInt(PropertiesUtil.getPropertity("redis.min.idle"));//min idle connection
     private static Boolean testOnBorrow=Boolean.parseBoolean(PropertiesUtil.getPropertity("redis.test.borrow"));//whether test when borrow a jedis if true then it's available
     private static Boolean testOnReturn=Boolean.parseBoolean(PropertiesUtil.getPropertity("redis.test.return"));//whether test when return a jedis if true then it's available
-    private static String redisIp=PropertiesUtil.getPropertity("redis.ip");
-    private static Integer redisPort=Integer.parseInt(PropertiesUtil.getPropertity("redis.port")) ;
+    private static String redisIp=PropertiesUtil.getPropertity("redis1.ip");
+    private static Integer redisPort=Integer.parseInt(PropertiesUtil.getPropertity("redis1.port")) ;
     private static void initPool(){
         JedisPoolConfig config=new JedisPoolConfig();
         config.setMaxIdle(maxIdle);

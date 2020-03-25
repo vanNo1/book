@@ -14,6 +14,7 @@ public class RedisLockUtil {
         Jedis jedis= RedisPool.getJedis();
         if (jedis.setnx(key,value).intValue()==1){
             log.info("抢到锁了");
+            RedisPool.returnResource(jedis);
             return true;//加锁成功
         }
         //现在还不能因为没取到锁就直接返回false，得判断这个锁是否过期。防止有线程死在里面没有解锁，后面的线程就永远拿不到锁了
@@ -24,6 +25,7 @@ public class RedisLockUtil {
             //ps：后面getset的线程虽然拿不到锁了，但是它改了value，不过不要紧，这两个同时到达这里的线程。value不可能相差大于毫秒
             if (lastTime2.equals(lastTime)){
                 log.info("抢到锁了");
+                RedisPool.returnResource(jedis);
                 return true;//加锁成功
             }
         }
@@ -39,6 +41,7 @@ public class RedisLockUtil {
         if (value.equals(MyTime)){
             jedis.del(key);
             log.info("解锁。。。");
+            RedisPool.returnResource(jedis);
         }
     }
 }
