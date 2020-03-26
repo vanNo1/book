@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,5 +32,33 @@ public class CategoryMapperTest {
         categoryItem.setParentId(0);
         categoryMapper.insert(categoryItem);
     }
+}
+@Test
+    public void revise(){
+    String domain="http://store.yangxiansheng.top";
+    Map map=new HashMap();
+    List<Category>categoryList=categoryMapper.selectByMap(map);
+    ArrayList<ArrayList>coverAssemble=new ArrayList<>();
+    ArrayList<ArrayList>coverAssemble2=new ArrayList<>();//all value
+    for (Category category : categoryList) {
+        String[] cover=category.getCover().split("/");
+        String[] cover2=category.getCover2().split("/");
+        ArrayList<String > coverList=new ArrayList<>();//put three value
+        ArrayList<String > coverList2=new ArrayList<>();//put three value
+        for (int i=cover.length-1;i>cover.length-4;i--){
+            coverList.add(cover[i]);
+            coverList2.add(cover2[i]);
+        }
+        Collections.reverse(coverList);
+        Collections.reverse(coverList2);//得到按顺序的值img，Biomedicine，978-3-319-25474-6_CoverFigure.jpg
+        String newcover=domain+"/"+coverList.get(0)+"/"+coverList.get(1)+"/"+coverList.get(2);
+        String newcover2=domain+"/"+coverList2.get(0)+"/"+coverList2.get(1)+"/"+coverList2.get(2);
+        category.setCover(newcover);
+        category.setCover2(newcover2);
+        categoryMapper.updateById(category);
+    }
+
+
+
 }
 }

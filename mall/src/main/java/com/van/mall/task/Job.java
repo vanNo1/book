@@ -29,8 +29,9 @@ public class Job {
     @Scheduled(cron = "*/5 * * * * ?")
     public void clean2(){
         RLock lock= redissonManager.getRedisson().getLock("key");
+        boolean getLock=false;
         try {
-            if (lock.tryLock(2,5, TimeUnit.SECONDS)) {
+            if (getLock= lock.tryLock(0,5, TimeUnit.SECONDS)) {
                 log.info("tomcat一执行清理垃圾111111111111111");
             }else {
                 log.info("Redisson没获取到锁:ThreadName:{}",Thread.currentThread().getName());
@@ -38,6 +39,9 @@ public class Job {
         } catch (InterruptedException e) {
             log.error("Redisson获取锁异常",e);
         }finally {
+            if (!getLock){
+                return;
+            }
             lock.unlock();
             log.info("Redisson释放锁");
         }

@@ -1,7 +1,6 @@
 package com.van.mall.common;
 
 import com.van.mall.util.PropertiesUtil;
-import org.springframework.context.annotation.PropertySource;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -10,7 +9,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @author Van
  * @date 2020/3/21 - 13:51
  */
-@PropertySource(value = {"classpath:application.properties"})
+//@PropertySource(value = {"classpath:application.properties"})
 public class RedisPool {
     private static JedisPool pool;//connection pool
     private static Integer maxTotal =Integer.parseInt(PropertiesUtil.getPropertity("redis.max.total")) ;//max connection
