@@ -16,7 +16,11 @@ import java.time.LocalDateTime;
 public class User {
     @TableId
     private int id;
+    private String username;
+    private String password;
     private String openId;
+    private String question;
+    private String answer;
     private String avatarUrl;
     private String city;
     private String country;
@@ -24,10 +28,11 @@ public class User {
     private String language;
     private String nickName;
     private String province;
+    private String platform;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-    private String platform;
+
 
 }

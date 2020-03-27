@@ -34,7 +34,13 @@ public class ServerResponse<T> implements Serializable {
     public static<T> ServerResponse<T> success(String msg,T data){
         return new ServerResponse(Const.ServerResponse.SUCCESS_CODE,msg,data);
     }
+    public static ServerResponse success(String msg){
+        return new ServerResponse(Const.ServerResponse.SUCCESS_CODE,msg,null);
+    }
     public static <T>ServerResponse<T>error(String msg){
         return new ServerResponse(Const.ServerResponse.ERROR_CODE,msg,null);
+    }
+    public static <T>ServerResponse<T>error(Integer error_code,String msg){
+        return new ServerResponse(error_code,msg,null);
     }
 }

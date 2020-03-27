@@ -12,4 +12,8 @@ public interface UserService {
     ServerResponse getDay(String openId);
     User selectUserByOpenId(String openId);
     boolean isDupilicate(String openId);
+    ServerResponse changePassword(String username,String oldPassword,String newPassword,String openId);
+    ServerResponse forgetPassword(String openId, String answer);
+    ServerResponse forgetPasswordAndChangePassword(String openId,String forgetToken,String newPassword);
+    ServerResponse login(String openId, String username, String password);
 }
