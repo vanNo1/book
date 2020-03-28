@@ -26,7 +26,7 @@ public class Product {
     private String detail;
     private BigDecimal price;
     private Integer stock;
-    private  Integer status;
+    private Integer status;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)

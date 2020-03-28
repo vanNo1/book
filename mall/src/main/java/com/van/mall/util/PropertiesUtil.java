@@ -14,28 +14,30 @@ import java.util.Properties;
 @Slf4j
 public class PropertiesUtil {
     private static Properties properties;
+
     static {
-        String fileName="application.properties";
-        properties=new Properties();
+        String fileName = "application.properties";
+        properties = new Properties();
         try {
             properties.load(new InputStreamReader(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName)));
         } catch (IOException e) {
-            log.error("配置文件读取异常",e);
+            log.error("配置文件读取异常", e);
         }
 
     }
 
-    public static String getPropertity(String key){
-        String value=properties.getProperty(key.trim());
-        if (StringUtils.isNotBlank(value)){
+    public static String getPropertity(String key) {
+        String value = properties.getProperty(key.trim());
+        if (StringUtils.isNotBlank(value)) {
             return value.trim();
         }
         return null;
     }
-    public static String getPropertity(String key,String defaultValue){
-        String value=properties.getProperty(key.trim());
-        if (!StringUtils.isNotBlank(value)){
-            value=defaultValue;
+
+    public static String getPropertity(String key, String defaultValue) {
+        String value = properties.getProperty(key.trim());
+        if (!StringUtils.isNotBlank(value)) {
+            value = defaultValue;
         }
         return value.trim();
     }

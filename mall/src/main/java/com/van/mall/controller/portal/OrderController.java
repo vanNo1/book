@@ -28,47 +28,50 @@ import java.util.Map;
 public class OrderController {
     @Resource
     private OrderServiceImpl orderService;
+
     @RequestMapping("/pay")
-    public ServerResponse pay(HttpSession session, HttpServletRequest request,Long orderNo){
-        User user=(User)session.getAttribute(Const.CURRENT_USER);
-        if (user==null){
+    public ServerResponse pay(HttpSession session, HttpServletRequest request, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
             return ServerResponse.error("用户未登录");
         }
-        String path=request.getSession().getServletContext().getRealPath("/upload");
-        return orderService.pay(orderNo,user.getId(),path);
+        String path = request.getSession().getServletContext().getRealPath("/upload");
+        return orderService.pay(orderNo, user.getId(), path);
     }
+
     @RequestMapping("alipay_callback.do")
-    public Object alipayCallback(HttpServletRequest request){
-        Map params=new HashMap();
-         Map requestParams=request.getParameterMap();
-         String valueStr="";
-         for (Iterator iterator=requestParams.keySet().iterator();iterator.hasNext();){
-             String key=(String) iterator.next();
-             String []values=(String[]) requestParams.get(key);
-             for (int i=0;i<values.length;i++){
-                 valueStr=(i==values.length-1)?valueStr+values[i]:valueStr+values[i]+",";
-             }
-             params.put(key,valueStr);
-         }
-         log.info("支付宝回调sign{}，trade_status{}，参数{}",params.get("sign"),params.get("trade_status"),params.toString());
-                 //todo verify the authentic of params to ensure that is from alipay and avoid the repeat of notify from alipay
+    public Object alipayCallback(HttpServletRequest request) {
+        Map params = new HashMap();
+        Map requestParams = request.getParameterMap();
+        String valueStr = "";
+        for (Iterator iterator = requestParams.keySet().iterator(); iterator.hasNext(); ) {
+            String key = (String) iterator.next();
+            String[] values = (String[]) requestParams.get(key);
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            params.put(key, valueStr);
+        }
+        log.info("支付宝回调sign{}，trade_status{}，参数{}", params.get("sign"), params.get("trade_status"), params.toString());
+        //todo verify the authentic of params to ensure that is from alipay and avoid the repeat of notify from alipay
         params.remove("sign_type");
         try {
-            boolean alipayRSACheckedV2= AlipaySignature.rsaCheckV2(params, Configs.getPublicKey(),"utf-8",Configs.getSignType());
-            if (!alipayRSACheckedV2){
+            boolean alipayRSACheckedV2 = AlipaySignature.rsaCheckV2(params, Configs.getPublicKey(), "utf-8", Configs.getSignType());
+            if (!alipayRSACheckedV2) {
                 return ServerResponse.error("非法请求，验证不通过");
                 //todo service logic
 
             }
         } catch (AlipayApiException e) {
-            log.error("支付宝回调异常",e);
+            log.error("支付宝回调异常", e);
         }
         //todo verify datas
-return null;
+        return null;
     }
+
     @RequestMapping("/create.do")
-    public ServerResponse create(HttpSession session,Integer shippingId){
-   //todo
+    public ServerResponse create(HttpSession session, Integer shippingId) {
+        //todo
         return null;
 
     }

@@ -17,13 +17,14 @@ import javax.annotation.Resource;
 public class UserMapperTest {
     @Resource
     private UserMapper userMapper;
-@Test
-    public void test(){
-    User user=new User();
-    user.setUsername("jack");
-    user.setPassword("321");
-    userMapper.insert(user);
-}
+
+    @Test
+    public void test() {
+        User user = new User();
+        user.setUsername("jack");
+        user.setPassword("321");
+        userMapper.insert(user);
+    }
 
 
 }

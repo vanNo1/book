@@ -18,21 +18,23 @@ import java.util.Map;
 public class OrderItemServiceImpl implements IOrderService {
     @Resource
     private OrderItemMapper orderItemMapper;
-    public List<OrderItem> findOrderItemByUserIdAndOrderId(Integer userId,Long orderNo){
-        Map map=new HashMap();
-        map.put("userId",userId);
-        map.put("orderNo",orderNo);
-        List<OrderItem>orderItemList=orderItemMapper.selectByMap(map);
+
+    public List<OrderItem> findOrderItemByUserIdAndOrderId(Integer userId, Long orderNo) {
+        Map map = new HashMap();
+        map.put("userId", userId);
+        map.put("orderNo", orderNo);
+        List<OrderItem> orderItemList = orderItemMapper.selectByMap(map);
         return orderItemList;
     }
-    public boolean batchInsert(List<OrderItem>orderItemList){
-        int num=0;
+
+    public boolean batchInsert(List<OrderItem> orderItemList) {
+        int num = 0;
         for (OrderItem orderItem : orderItemList) {
-           num+=orderItemMapper.insert(orderItem);
+            num += orderItemMapper.insert(orderItem);
         }
-        if (num==orderItemList.size()){
+        if (num == orderItemList.size()) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

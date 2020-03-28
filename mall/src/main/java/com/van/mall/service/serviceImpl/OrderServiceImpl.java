@@ -63,38 +63,37 @@ public class OrderServiceImpl implements IOrderService {
             log.info("body:" + response.getBody());
         }
     }
-    public Order selectByOrderNo(Long orderNo){
-        Map map=new HashMap();
-        map.put("orderNo",orderNo);
-        List<Order>orderList=orderMapper.selectByMap(map);
-        if (orderList.size()>0){
+
+    public Order selectByOrderNo(Long orderNo) {
+        Map map = new HashMap();
+        map.put("orderNo", orderNo);
+        List<Order> orderList = orderMapper.selectByMap(map);
+        if (orderList.size() > 0) {
             return orderList.get(0);
-        }else {
+        } else {
             return null;
         }
     }
 
-    public Order findOrderByOrderNoAndUserId(Integer userId,Long orderNo){
-        Map map=new HashMap();
-        map.put("userId",userId);
-        map.put("orderNo",orderNo);
-        List<Order>orderList=orderMapper.selectByMap(map);
-        if (orderList.size()>0){
+    public Order findOrderByOrderNoAndUserId(Integer userId, Long orderNo) {
+        Map map = new HashMap();
+        map.put("userId", userId);
+        map.put("orderNo", orderNo);
+        List<Order> orderList = orderMapper.selectByMap(map);
+        if (orderList.size() > 0) {
             return orderList.get(0);
-        }else {
+        } else {
             return null;
         }
     }
-    public ServerResponse pay(Long orderNo,Integer userId,String path){
-        Map<String ,String >resultMap=new HashMap<>();
-        Order order=findOrderByOrderNoAndUserId(userId,orderNo);
-        if (order==null){
+
+    public ServerResponse pay(Long orderNo, Integer userId, String path) {
+        Map<String, String> resultMap = new HashMap<>();
+        Order order = findOrderByOrderNoAndUserId(userId, orderNo);
+        if (order == null) {
             return ServerResponse.error("用户没有该订单");
         }
-        resultMap.put("orderNo",String.valueOf(order.getOrderNo()));
-
-
-
+        resultMap.put("orderNo", String.valueOf(order.getOrderNo()));
 
 
         // (必填) 商户网站订单系统中唯一订单号，64个字符以内，只能包含字母、数字、下划线，
@@ -102,7 +101,7 @@ public class OrderServiceImpl implements IOrderService {
         String outTradeNo = order.getOrderNo().toString();
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
-        String subject = "happymmall 扫码支付，订单号："+outTradeNo;
+        String subject = "happymmall 扫码支付，订单号：" + outTradeNo;
 
         // (必填) 订单总金额，单位为元，不能超过1亿元
         // 如果同时传入了【打折金额】,【不可打折金额】,【订单总金额】三者,则必须满足如下条件:【订单总金额】=【打折金额】+【不可打折金额】
@@ -117,7 +116,7 @@ public class OrderServiceImpl implements IOrderService {
         String sellerId = "";
 
         // 订单描述，可以对交易或商品进行一个详细地描述，比如填写"购买商品2件共15.00元"
-        String body = "订单："+outTradeNo+"购买商品共"+totalAmount+"元";
+        String body = "订单：" + outTradeNo + "购买商品共" + totalAmount + "元";
 
         // 商户操作员编号，添加此参数可以为商户操作员做销售统计
         String operatorId = "test_operator_id";
@@ -134,13 +133,11 @@ public class OrderServiceImpl implements IOrderService {
 
         // 商品明细列表，需填写购买商品详细信息，
         List<GoodsDetail> goodsDetailList = new ArrayList<GoodsDetail>();
-        List<OrderItem>orderItemList=orderItemService.findOrderItemByUserIdAndOrderId(userId,orderNo);
+        List<OrderItem> orderItemList = orderItemService.findOrderItemByUserIdAndOrderId(userId, orderNo);
         for (OrderItem item : orderItemList) {
-            GoodsDetail good=GoodsDetail.newInstance(item.getProductId().toString(),item.getProductName(), BigDecimalUtil.mul(item.getCurrentUnitPrice().doubleValue(),new Double(100).doubleValue()).longValue(),item.getQuantity());
+            GoodsDetail good = GoodsDetail.newInstance(item.getProductId().toString(), item.getProductName(), BigDecimalUtil.mul(item.getCurrentUnitPrice().doubleValue(), new Double(100).doubleValue()).longValue(), item.getQuantity());
             goodsDetailList.add(good);
         }
-
-
 
 
 //        // 创建一个商品信息，参数含义分别为商品id（使用国标）、名称、单价（单位为分）、数量，如果需要添加商品类别，详见GoodsDetail
@@ -173,9 +170,6 @@ public class OrderServiceImpl implements IOrderService {
         tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
 
 
-
-
-
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
         switch (result.getTradeStatus()) {
             case SUCCESS:
@@ -184,17 +178,17 @@ public class OrderServiceImpl implements IOrderService {
                 AlipayTradePrecreateResponse response = result.getResponse();
                 dumpResponse(response);
                 //封装二维码。。。。。。。。。。。。。。。。
-                File upload=new File(path);
-                if (!upload.exists()){
+                File upload = new File(path);
+                if (!upload.exists()) {
                     upload.setWritable(true);
                     upload.mkdirs();
-            }
-                String qrName=String.format("ar-%s.png",response.getOutTradeNo());
-                String qrPath=String.format(upload+"/"+qrName);
-                                // 需要修改为运行机器上的路径
+                }
+                String qrName = String.format("ar-%s.png", response.getOutTradeNo());
+                String qrPath = String.format(upload + "/" + qrName);
+                // 需要修改为运行机器上的路径
                 log.info("filePath:" + qrPath);
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, qrPath);//get QRCode
-                File targetFile=new File(path,qrName);
+                File targetFile = new File(path, qrName);
                 try {
                     FTPUtil.uploadFile(Lists.newArrayList(targetFile));//sent QRCode to FTPServer
                 } catch (IOException e) {
@@ -205,7 +199,7 @@ public class OrderServiceImpl implements IOrderService {
 
             case FAILED:
                 log.error("支付宝预下单失败!!!");
-                return  ServerResponse.error("支付宝预下单失败!!!");
+                return ServerResponse.error("支付宝预下单失败!!!");
 
             case UNKNOWN:
                 log.error("系统异常，预下单状态未知!!!");
@@ -213,22 +207,23 @@ public class OrderServiceImpl implements IOrderService {
 
             default:
                 log.error("不支持的交易状态，交易返回异常!!!");
-                return  ServerResponse.error("不支持的交易状态，交易返回异常!!!");
+                return ServerResponse.error("不支持的交易状态，交易返回异常!!!");
         }
     }
-    public ServerResponse aliCallback(Map<String ,String >params){
-         Long orderNo=Long.parseLong(params.get("out_trade_no"));// in pay method i fill orderNo to out_trade_no
-        String tradeNo =params.get("trade_status");//alipay's tradeNo
-        String tradeStatus=params.get("trade_status");
-        Order order=selectByOrderNo(orderNo);
-        if (order==null){
+
+    public ServerResponse aliCallback(Map<String, String> params) {
+        Long orderNo = Long.parseLong(params.get("out_trade_no"));// in pay method i fill orderNo to out_trade_no
+        String tradeNo = params.get("trade_status");//alipay's tradeNo
+        String tradeStatus = params.get("trade_status");
+        Order order = selectByOrderNo(orderNo);
+        if (order == null) {
             return ServerResponse.error("该订单不是快乐商场的订单，请务必忽略");
         }
-        if (order.getStatus()>= Const.OrderStatusEnum.PAID.getCode()){
+        if (order.getStatus() >= Const.OrderStatusEnum.PAID.getCode()) {
             //the user is already paid
             return ServerResponse.success("支付宝重复调用");
         }
-        if (Const.AlipayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeNo)){
+        if (Const.AlipayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeNo)) {
             order.setStatus(Const.OrderStatusEnum.ORDER_SUCCESS.getCode());
             orderMapper.updateById(order);
         }
@@ -236,64 +231,68 @@ public class OrderServiceImpl implements IOrderService {
         return null;
     }
 
-    public ServerResponse createOrder(Integer userId,Integer shippingId){
+    public ServerResponse createOrder(Integer userId, Integer shippingId) {
         //get all checked chart from a user
-        List<Cart>cartList=cartService.selectUserCartWhichIsChecked(userId);
-        List<OrderItem>orderItemList=(List<OrderItem>)getCartOrderItem(userId,cartList);
+        List<Cart> cartList = cartService.selectUserCartWhichIsChecked(userId);
+        List<OrderItem> orderItemList = (List<OrderItem>) getCartOrderItem(userId, cartList);
         //get order total price
-        BigDecimal totalPrice=getTotalPrice(orderItemList);
+        BigDecimal totalPrice = getTotalPrice(orderItemList);
 
         //generate the order
-        Order order=assembleOrder(userId,shippingId,totalPrice);
+        Order order = assembleOrder(userId, shippingId, totalPrice);
         for (OrderItem orderItem : orderItemList) {
             orderItem.setOrderNo(order.getOrderNo());
         }
         //batch insert orderItem
-            orderItemService.batchInsert(orderItemList);
+        orderItemService.batchInsert(orderItemList);
         //clean the cart
         cleanCart(cartList);
         //todo
         return null;
 
     }
-    private void cleanCart(List<Cart> cartList){
+
+    private void cleanCart(List<Cart> cartList) {
         for (Cart cart : cartList) {
             cartService.deleteById(cart.getId());
         }
     }
-    private void reduceProductStock(List<OrderItem>orderItemList){
+
+    private void reduceProductStock(List<OrderItem> orderItemList) {
         for (OrderItem orderItem : orderItemList) {
-            Product product=productMapper.selectById(orderItem.getProductId());
-            product.setStock(product.getStock()-orderItem.getQuantity());
+            Product product = productMapper.selectById(orderItem.getProductId());
+            product.setStock(product.getStock() - orderItem.getQuantity());
             productMapper.updateById(product);
         }
     }
-    private Order assembleOrder(Integer userId,Integer shippingId,BigDecimal payment){
-        Order order=new Order();
+
+    private Order assembleOrder(Integer userId, Integer shippingId, BigDecimal payment) {
+        Order order = new Order();
         order.setOrderNo(generateOrderNo());
         order.setStatus(10);//10-no pay
         order.setPostage(0);
         order.setPaymentType(1);//1-pay online
         order.setUserId(userId);
         order.setShippingId(shippingId);
-        int count= orderMapper.insert(order);
-        if (count>0){
+        int count = orderMapper.insert(order);
+        if (count > 0) {
             return order;
-        }else {
+        } else {
             return null;
         }
 
 
     }
-    private long generateOrderNo(){
-        long currentTime=System.currentTimeMillis();
-        return currentTime+currentTime%10;//%10 can generate a 0-9 number
+
+    private long generateOrderNo() {
+        long currentTime = System.currentTimeMillis();
+        return currentTime + currentTime % 10;//%10 can generate a 0-9 number
     }
 
-    private BigDecimal getTotalPrice(List<OrderItem>orderItemList){
-        BigDecimal totalPrice=new BigDecimal("0");
+    private BigDecimal getTotalPrice(List<OrderItem> orderItemList) {
+        BigDecimal totalPrice = new BigDecimal("0");
         for (OrderItem orderItem : orderItemList) {
-            totalPrice=BigDecimalUtil.add(totalPrice.doubleValue(),orderItem.getTotalPrice().doubleValue());
+            totalPrice = BigDecimalUtil.add(totalPrice.doubleValue(), orderItem.getTotalPrice().doubleValue());
         }
         return totalPrice;
     }
@@ -301,35 +300,34 @@ public class OrderServiceImpl implements IOrderService {
     //make sure two things
     // 1.the product in the cart is must on sale
     //2. the product's stock is must enough
-    private ServerResponse getCartOrderItem(Integer userId,List<Cart>cartList){
-        if (CollectionUtils.isEmpty(cartList)){
+    private ServerResponse getCartOrderItem(Integer userId, List<Cart> cartList) {
+        if (CollectionUtils.isEmpty(cartList)) {
             return ServerResponse.error("购物车为空");
         }
-        List orderItemList=new ArrayList();
+        List orderItemList = new ArrayList();
         for (Cart cart : cartList) {
-            Product product=productMapper.selectById(cart.getProductId());
+            Product product = productMapper.selectById(cart.getProductId());
             //verify this product is no sale
-            if (product.getStatus()!=1){
-                return ServerResponse.error("商品"+product.getName()+"不是在售状态");
+            if (product.getStatus() != 1) {
+                return ServerResponse.error("商品" + product.getName() + "不是在售状态");
             }
             //make sure that stock of product is enough
-            if (product.getStock()<cart.getQuantity()){
-                return ServerResponse.error("产品"+product.getName()+"库存不足");
+            if (product.getStock() < cart.getQuantity()) {
+                return ServerResponse.error("产品" + product.getName() + "库存不足");
             }
             //user cart and product to wrap orderItem
-            OrderItem orderItem=new OrderItem();
+            OrderItem orderItem = new OrderItem();
             orderItem.setUserid(userId);
             orderItem.setProductId(product.getId());
             orderItem.setProductName(product.getName());
             orderItem.setProductImage(product.getMainImage());
             orderItem.setCurrentUnitPrice(product.getPrice());
             orderItem.setQuantity(cart.getQuantity());
-            orderItem.setTotalPrice(BigDecimalUtil.mul(cart.getQuantity().doubleValue(),product.getPrice().doubleValue()));
+            orderItem.setTotalPrice(BigDecimalUtil.mul(cart.getQuantity().doubleValue(), product.getPrice().doubleValue()));
             orderItemList.add(orderItem);
         }
         return ServerResponse.success(orderItemList);
     }
-
 
 
 }

@@ -15,24 +15,25 @@ import javax.annotation.PostConstruct;
 @Component
 @Slf4j
 public class RedissonManager {
-    private Config config =new Config();
-    private Redisson redisson=null;
-    private  String redisIp= PropertiesUtil.getPropertity("redis1.ip");
-    private  Integer redisPort=Integer.parseInt(PropertiesUtil.getPropertity("redis1.port")) ;
+    private Config config = new Config();
+    private Redisson redisson = null;
+    private String redisIp = PropertiesUtil.getPropertity("redis1.ip");
+    private Integer redisPort = Integer.parseInt(PropertiesUtil.getPropertity("redis1.port"));
 
     //构造方法完成后自动执行该方法
     @PostConstruct
-    private void init(){
+    private void init() {
         try {
             //Address 是ip:port的形式
             config.useSingleServer().setAddress("redis://127.0.0.1:6379");
-            redisson=(Redisson) Redisson.create(config);
+            redisson = (Redisson) Redisson.create(config);
             log.info("初始化Redisson完成");
         } catch (Exception e) {
-            log.error("初始化Redisson失败",e);
+            log.error("初始化Redisson失败", e);
         }
     }
-    public Redisson getRedisson(){
+
+    public Redisson getRedisson() {
         return redisson;
 
     }

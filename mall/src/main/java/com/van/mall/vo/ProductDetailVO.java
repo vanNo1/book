@@ -19,9 +19,9 @@ public class ProductDetailVO {
     private String detail;
     private BigDecimal price;
     private Integer stock;
-    private  Integer status;
+    private Integer status;
     private String createTime;
-    private String  updateTime;
+    private String updateTime;
 
     private String imageHost;
     private Integer parentCategoryId;

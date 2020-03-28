@@ -73,59 +73,62 @@ public class JsonUtil {
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
-    public static <T> String object2String(T object){
-        if (object==null){
+    public static <T> String object2String(T object) {
+        if (object == null) {
             return null;
         }
         try {
-            return object instanceof String ? (String) object:objectMapper.writeValueAsString(object);
+            return object instanceof String ? (String) object : objectMapper.writeValueAsString(object);
         } catch (IOException e) {
-            log.warn("Parse object to string error",e);
-            return null;
-        }
-    }
-    public static <T> String object2StringPretty(T object){
-        if (object==null){
-            return null;
-        }
-        try {
-            return object instanceof String ? (String) object:objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
-        } catch (IOException e) {
-            log.warn("Parse object to string error",e);
+            log.warn("Parse object to string error", e);
             return null;
         }
     }
 
-    public static <T> T string2Object(String str,Class<T>clazz){
-        if (StringUtils.isEmpty(str)||clazz==null){
+    public static <T> String object2StringPretty(T object) {
+        if (object == null) {
             return null;
         }
-        try{
-            return clazz.equals(String.class)? (T) str:objectMapper.readValue(str,clazz);
-        }catch (Exception e){
-            log.warn("Parse String to object error!",e);
+        try {
+            return object instanceof String ? (String) object : objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+        } catch (IOException e) {
+            log.warn("Parse object to string error", e);
             return null;
         }
     }
-    public static <T> T string2Object(String str, TypeReference<T> typeReference){
-        if (StringUtils.isEmpty(str)||typeReference==null){
-            return null;
-        }
-        try{
-            return typeReference.getType().equals(String.class)?(T)str:objectMapper.readValue(str,typeReference);
 
-        }catch (Exception e){
-            log.warn("Parse String to object error!",e);
+    public static <T> T string2Object(String str, Class<T> clazz) {
+        if (StringUtils.isEmpty(str) || clazz == null) {
+            return null;
+        }
+        try {
+            return clazz.equals(String.class) ? (T) str : objectMapper.readValue(str, clazz);
+        } catch (Exception e) {
+            log.warn("Parse String to object error!", e);
             return null;
         }
     }
-    public static <T> T string2Object(String str,Class<?> collectionClass,Class<?>... elementClass){
-        JavaType javaType=objectMapper.getTypeFactory().constructParametricType(collectionClass,elementClass);
-        try{
-            return objectMapper.readValue(str,javaType);
-        }catch (Exception e){
-        log.warn("Parse String to object error!",e);
-        return null;
+
+    public static <T> T string2Object(String str, TypeReference<T> typeReference) {
+        if (StringUtils.isEmpty(str) || typeReference == null) {
+            return null;
+        }
+        try {
+            return typeReference.getType().equals(String.class) ? (T) str : objectMapper.readValue(str, typeReference);
+
+        } catch (Exception e) {
+            log.warn("Parse String to object error!", e);
+            return null;
+        }
+    }
+
+    public static <T> T string2Object(String str, Class<?> collectionClass, Class<?>... elementClass) {
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(collectionClass, elementClass);
+        try {
+            return objectMapper.readValue(str, javaType);
+        } catch (Exception e) {
+            log.warn("Parse String to object error!", e);
+            return null;
         }
     }
 

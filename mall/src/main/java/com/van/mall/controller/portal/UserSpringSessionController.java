@@ -22,11 +22,12 @@ import javax.servlet.http.HttpSession;
 public class UserSpringSessionController {
     @Resource
     private UserServiceImpl userService;
-    @RequestMapping(value = "/login.do",method = RequestMethod.POST)
-    public ServerResponse login(String username, String password, HttpSession session , HttpServletResponse httpServletResponse){
-        ServerResponse response=userService.login(username,password);
-        if (response.isSuccess()){
-        session.setAttribute(Const.CURRENT_USER,response.getData());
+
+    @RequestMapping(value = "/login.do", method = RequestMethod.POST)
+    public ServerResponse login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse) {
+        ServerResponse response = userService.login(username, password);
+        if (response.isSuccess()) {
+            session.setAttribute(Const.CURRENT_USER, response.getData());
             //sessionId= 3D5D2DBC9DF714996B58FA5297920E36
 //            CookieUtil.writeLoginToken(httpServletResponse,session.getId());
 //            RedisPoolUtil.setEx(session.getId(), JsonUtil.object2String(response.getData()), Const.ReidsCacheExTime.REDIS_SESSION_EXTIME);
@@ -36,16 +37,18 @@ public class UserSpringSessionController {
     }
 
     @RequestMapping(value = "/logout.do")
-    public ServerResponse logout(HttpServletRequest request, HttpServletResponse response, HttpSession session ){
-    session.removeAttribute(Const.CURRENT_USER);
+    public ServerResponse logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        session.removeAttribute(Const.CURRENT_USER);
 //        String loginToken=CookieUtil.readLoginToken(request);
 //        CookieUtil.delLoginToken(response,request);
 //        RedisPoolUtil.del(loginToken);
-        return ServerResponse.success(null);}
+        return ServerResponse.success(null);
+    }
+
     @RequestMapping(value = "/get_user_info.do")
-    public ServerResponse getUserInfo(HttpSession session){
-        User user=(User) session.getAttribute(Const.CURRENT_USER);
-        if (user==null){
+    public ServerResponse getUserInfo(HttpSession session) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
             return ServerResponse.error("用户未登录");
         }
         return ServerResponse.success(user);

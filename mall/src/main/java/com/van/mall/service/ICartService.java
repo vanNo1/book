@@ -12,12 +12,20 @@ import java.util.List;
  */
 public interface ICartService {
     Cart selectByUserIdAndProductId(Integer userId, Integer productId);
+
     ServerResponse add(Integer userId, Integer productId, Integer count);
+
     List<Cart> selectCartListByUserId(Integer userId);
-    CartVO getCartVOLimit(Integer   userId);
+
+    CartVO getCartVOLimit(Integer userId);
+
     boolean isAllChecked(Integer userId);
-    ServerResponse update(Integer userId,Integer productId,Integer count);
-    ServerResponse delete(Integer userId,String productIds);
+
+    ServerResponse update(Integer userId, Integer productId, Integer count);
+
+    ServerResponse delete(Integer userId, String productIds);
+
     ServerResponse selectOrUnSelectAll(Integer userid);
+
     List<Cart> selectUserCartWhichIsChecked(Integer userId);
 }

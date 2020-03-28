@@ -8,12 +8,13 @@ import lombok.Getter;
  */
 @Getter
 public enum ResponseCode {
-    SUCCESS(0,"SUCCESS"),
-    ERROR(1,"ERROR");
+    SUCCESS(0, "SUCCESS"),
+    ERROR(1, "ERROR");
     private int code;
     private String msg;
-    private ResponseCode(int code,String msg){
-        this.code=code;
-        this.msg=msg;
+
+    private ResponseCode(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
     }
 }

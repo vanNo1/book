@@ -21,15 +21,16 @@ import javax.servlet.http.HttpSession;
 public class UserManageController {
     @Resource
     private UserServiceImpl userService;
-    @RequestMapping(value = "/login.do" ,method = RequestMethod.POST)
-    public ServerResponse login(@RequestParam String username,@RequestParam String password, HttpSession session){
-        ServerResponse response=userService.login(username,password);
-        User user=(User) response.getData();
-        if (response.isSuccess()){
-            if (user.getRole()==Const.Role.ROLE_ADMIN){
-                session.setAttribute(Const.CURRENT_USER,response.getData());
+
+    @RequestMapping(value = "/login.do", method = RequestMethod.POST)
+    public ServerResponse login(@RequestParam String username, @RequestParam String password, HttpSession session) {
+        ServerResponse response = userService.login(username, password);
+        User user = (User) response.getData();
+        if (response.isSuccess()) {
+            if (user.getRole() == Const.Role.ROLE_ADMIN) {
+                session.setAttribute(Const.CURRENT_USER, response.getData());
                 return response;
-            }else {
+            } else {
                 return ServerResponse.error("你不是管理员");
             }
 

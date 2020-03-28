@@ -25,7 +25,7 @@ public class OrderItem {
     private String productImage;
     private BigDecimal currentUnitPrice;
     private Integer quantity;
-    private  BigDecimal totalPrice;
+    private BigDecimal totalPrice;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)

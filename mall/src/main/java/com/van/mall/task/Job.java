@@ -19,27 +19,29 @@ import java.util.concurrent.TimeUnit;
 public class Job {
     @Resource
     private RedissonManager redissonManager;
-//    @Scheduled(cron = "*/5 * * * * ?")
-    public void clean(){
-        String time=Long.toString(System.currentTimeMillis()+5*1000);
-        RedisLockUtil.lock("key",time);
-      log.info("tomcat一执行清理垃圾111111111111111");
-      RedisLockUtil.unLock("key",time);
+
+    //    @Scheduled(cron = "*/5 * * * * ?")
+    public void clean() {
+        String time = Long.toString(System.currentTimeMillis() + 5 * 1000);
+        RedisLockUtil.lock("key", time);
+        log.info("tomcat一执行清理垃圾111111111111111");
+        RedisLockUtil.unLock("key", time);
     }
+
     @Scheduled(cron = "*/5 * * * * ?")
-    public void clean2(){
-        RLock lock= redissonManager.getRedisson().getLock("key");
-        boolean getLock=false;
+    public void clean2() {
+        RLock lock = redissonManager.getRedisson().getLock("key");
+        boolean getLock = false;
         try {
-            if (getLock= lock.tryLock(0,5, TimeUnit.SECONDS)) {
+            if (getLock = lock.tryLock(0, 5, TimeUnit.SECONDS)) {
                 log.info("tomcat一执行清理垃圾111111111111111");
-            }else {
-                log.info("Redisson没获取到锁:ThreadName:{}",Thread.currentThread().getName());
+            } else {
+                log.info("Redisson没获取到锁:ThreadName:{}", Thread.currentThread().getName());
             }
         } catch (InterruptedException e) {
-            log.error("Redisson获取锁异常",e);
-        }finally {
-            if (!getLock){
+            log.error("Redisson获取锁异常", e);
+        } finally {
+            if (!getLock) {
                 return;
             }
             lock.unlock();

@@ -12,9 +12,14 @@ import java.util.Set;
  */
 public interface ICategoryService {
     ServerResponse addCategory(String categoryName, Integer parentId);
-    ServerResponse setCategoryName(Integer categoryId,String categoryName);
+
+    ServerResponse setCategoryName(Integer categoryId, String categoryName);
+
     ServerResponse getChildrenParallelCategory(Integer categoryId);
+
     List<Category> selectCategoryChildrenByParentId(Integer parentId);
+
     ServerResponse getCategoryAndDeepChildrenCategory(Integer categoryId);
-    Set<Category> findChildCategory(Set<Category>categorySet, Integer id);
+
+    Set<Category> findChildCategory(Set<Category> categorySet, Integer id);
 }

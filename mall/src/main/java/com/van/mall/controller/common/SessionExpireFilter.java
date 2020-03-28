@@ -13,7 +13,6 @@ import java.io.IOException;
 
 /**
  * @author Van
-
  * @date 2020/3/22 - 16:04
  */
 //@Component
@@ -26,17 +25,17 @@ public class SessionExpireFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest=(HttpServletRequest)request;
-        String loginToken= CookieUtil.readLoginToken(httpServletRequest);
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
         //你存在，我就更新，不存在就不更新过期时间
-        if (StringUtils.isNotEmpty(loginToken)){
-            String userStr= RedisPoolUtil.get(loginToken);
-            User user= JsonUtil.string2Object(userStr,User.class);
-            if(user!=null){
+        if (StringUtils.isNotEmpty(loginToken)) {
+            String userStr = RedisPoolUtil.get(loginToken);
+            User user = JsonUtil.string2Object(userStr, User.class);
+            if (user != null) {
                 RedisPoolUtil.expire(loginToken, Const.ReidsCacheExTime.REDIS_SESSION_EXTIME);
             }
         }
-        chain.doFilter(request,response);
+        chain.doFilter(request, response);
     }
 
     @Override

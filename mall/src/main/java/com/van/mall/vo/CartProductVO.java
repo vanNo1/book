@@ -19,7 +19,7 @@ public class CartProductVO {
     private String productMainImage;
     private BigDecimal productPrice;
     private Integer productStock;
-    private  Integer productStatus;
+    private Integer productStatus;
     private BigDecimal productTotalPrice;
     private Integer productChecked;//whether product selected
     private String limitQuantity;//a limit quantity result

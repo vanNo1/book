@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 @TableName("mmall_order_item")
 public class Order {
     @TableId
-   private Integer id;
-   private Long orderNo;
-   private Integer userId;
-   private Integer shippingId;
-   private BigDecimal payment;
-   private Integer paymentType;
-   private Integer postage;
-   private Integer status;
-   private LocalDateTime paymentTime;
+    private Integer id;
+    private Long orderNo;
+    private Integer userId;
+    private Integer shippingId;
+    private BigDecimal payment;
+    private Integer paymentType;
+    private Integer postage;
+    private Integer status;
+    private LocalDateTime paymentTime;
     private LocalDateTime sendTime;
     private LocalDateTime endTime;
     private LocalDateTime closeTime;

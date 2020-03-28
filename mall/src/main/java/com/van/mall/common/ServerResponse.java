@@ -16,23 +16,26 @@ public class ServerResponse<T> implements Serializable {
     private int status;
     private String msg;
     private T data;
-    private ServerResponse(int status,String msg,T data){
-        this.data=data;
-        this.msg=msg;
-        this.status=status;
+
+    private ServerResponse(int status, String msg, T data) {
+        this.data = data;
+        this.msg = msg;
+        this.status = status;
     }
-    public boolean isSuccess(){
-        if (this.status==1)
-        {
+
+    public boolean isSuccess() {
+        if (this.status == 1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
-    public static<T> ServerResponse<T> success(T data){
-        return new ServerResponse(ResponseCode.SUCCESS.getCode(),null,data);
+
+    public static <T> ServerResponse<T> success(T data) {
+        return new ServerResponse(ResponseCode.SUCCESS.getCode(), null, data);
     }
-    public static ServerResponse error(String msg){
-        return new ServerResponse(ResponseCode.ERROR.getCode(),msg,null);
+
+    public static ServerResponse error(String msg) {
+        return new ServerResponse(ResponseCode.ERROR.getCode(), msg, null);
     }
 }

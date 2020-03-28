@@ -11,11 +11,17 @@ import com.van.mall.vo.ProductListVO;
  */
 public interface IProductService {
     ServerResponse saveOrUpdateProduct(Product product);
+
     Boolean productIsExist(Integer productId);
-    ServerResponse setSaleStatus(Integer productId,Integer status);
+
+    ServerResponse setSaleStatus(Integer productId, Integer status);
+
     ProductDetailVO assembleProductDetailVO(Product product);
+
     ServerResponse manageProductDetail(Integer productId);
+
     ProductListVO assembleProductListVO(Product product);
-    ServerResponse getProductList(int pageNum,int pageSize);
+
+    ServerResponse getProductList(int pageNum, int pageSize);
 
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class TemplateController {
     @RequestMapping("/index")
-    public String toIndex(){
+    public String toIndex() {
         return "file.html";
     }
 }

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class TokenCache {
-    private static LoadingCache<String ,String >localCache= CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(1000).expireAfterAccess(12, TimeUnit.HOURS )
+    private static LoadingCache<String, String> localCache = CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(1000).expireAfterAccess(12, TimeUnit.HOURS)
             .build(new CacheLoader<String, String>() {
                 //当调用get取值，如果key没有对应的值的话，默认用此方法加载
                 @Override
@@ -21,21 +21,23 @@ public class TokenCache {
                     return "null";
                 }
             });
-    public static void setKey(String key,String value){
-        localCache.put(key,value);
+
+    public static void setKey(String key, String value) {
+        localCache.put(key, value);
     }
-    public static String getKey(String key){
+
+    public static String getKey(String key) {
         try {
-            String value=null;
-            value=localCache.get(key);
-            if ("null".equals(value)){
+            String value = null;
+            value = localCache.get(key);
+            if ("null".equals(value)) {
                 return null;
             }
             return value;
-        }catch (Exception e){
-        log.error("localCache get error",e);
+        } catch (Exception e) {
+            log.error("localCache get error", e);
         }
-    return null;
+        return null;
 
     }
 }
