@@ -28,53 +28,56 @@ import java.security.SecureRandom;
 public class ShelfController {
     @Resource
     private ShelfServiceImpl shelfService;
+
     @RequestMapping("/get")
-    public ServerResponse get(  HttpSession session){
-        if (!LoginUtil.isLogin(session)){
+    public ServerResponse get(HttpSession session) {
+        if (!LoginUtil.isLogin(session)) {
             return ServerResponse.error("用户未登录");
         }
-       String  openId=LoginUtil.getOpenId(session);
+        String openId = LoginUtil.getOpenId(session);
         return shelfService.get(openId);
     }
+
     @RequestMapping("/save")
-    public ServerResponse save(String shelf,HttpSession session){
-        if (!LoginUtil.isLogin(session)){
+    public ServerResponse save(String shelf, HttpSession session) {
+        if (!LoginUtil.isLogin(session)) {
             return ServerResponse.error("用户未登录");
         }
-        Gson gson=new Gson();
+        Gson gson = new Gson();
         try {
-            String decodeStr= URLDecoder.decode(shelf,"utf-8");
-            Shelf shelfItem=gson.fromJson(decodeStr,Shelf.class);
-            if (shelfItem==null){
+            String decodeStr = URLDecoder.decode(shelf, "utf-8");
+            Shelf shelfItem = gson.fromJson(decodeStr, Shelf.class);
+            if (shelfItem == null) {
                 return ServerResponse.error("参数有误");
             }
-            return shelfService.save(shelfItem.getFileName(),shelfItem.getOpenId());
+            return shelfService.save(shelfItem.getFileName(), shelfItem.getOpenId());
 
         } catch (UnsupportedEncodingException e) {
-            log.error("解码错误",e);
+            log.error("解码错误", e);
             return ServerResponse.error("解码错误");
         }
 
 
     }
-     @RequestMapping("/remove")
-    public ServerResponse remove(String shelf,HttpSession session){
-         if (!LoginUtil.isLogin(session)){
-             return ServerResponse.error("用户未登录");
-         }
-         Gson gson=new Gson();
-         try {
-             String decodeStr= URLDecoder.decode(shelf,"utf-8");
-             Shelf shelfItem=gson.fromJson(decodeStr,Shelf.class);
-             if (shelfItem==null){
-                 return ServerResponse.error("参数有误");
-             }
-             return shelfService.remove(shelfItem.getFileName(),shelfItem.getOpenId());
 
-         } catch (UnsupportedEncodingException e) {
-             log.error("解码错误",e);
-             return ServerResponse.error("解码错误");
-         }
+    @RequestMapping("/remove")
+    public ServerResponse remove(String shelf, HttpSession session) {
+        if (!LoginUtil.isLogin(session)) {
+            return ServerResponse.error("用户未登录");
+        }
+        Gson gson = new Gson();
+        try {
+            String decodeStr = URLDecoder.decode(shelf, "utf-8");
+            Shelf shelfItem = gson.fromJson(decodeStr, Shelf.class);
+            if (shelfItem == null) {
+                return ServerResponse.error("参数有误");
+            }
+            return shelfService.remove(shelfItem.getFileName(), shelfItem.getOpenId());
 
-     }
+        } catch (UnsupportedEncodingException e) {
+            log.error("解码错误", e);
+            return ServerResponse.error("解码错误");
+        }
+
+    }
 }

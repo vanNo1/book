@@ -19,9 +19,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class SignMapperTest {
     @Resource
     private SignMapper signMapper;
-@Test
-    public void test(){
-    Sign sign= signMapper.selectById(1);
-    System.out.println(sign);
-}
+
+    @Test
+    public void test() {
+        Sign sign = signMapper.selectById(1);
+        System.out.println(sign);
+    }
 }

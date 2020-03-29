@@ -7,6 +7,7 @@ import com.van.book3.common.ServerResponse;
  * @date 2020/3/19 - 10:34
  */
 public interface HotBookService {
-    int insert(String openId,String title,String fileName);
+    int insert(String openId, String title, String fileName);
+
     ServerResponse hotSearch();
 }

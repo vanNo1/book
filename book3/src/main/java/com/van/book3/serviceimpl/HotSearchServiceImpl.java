@@ -20,26 +20,28 @@ import java.util.Map;
 public class HotSearchServiceImpl implements HotSearchService {
     @Resource
     private HotSearchMapper hotSearchMapper;
-    public int insert(String keyword,String openId){
-        HotSearch hotSearch=new HotSearch();
+
+    public int insert(String keyword, String openId) {
+        HotSearch hotSearch = new HotSearch();
         hotSearch.setKeyword(keyword);
         hotSearch.setOpenId(openId);
-       return hotSearchMapper.insert(hotSearch);
+        return hotSearchMapper.insert(hotSearch);
     }
-    public HotSearchVO getHotSearchVO(){
-        QueryWrapper<HotSearch> queryWrapper=new QueryWrapper();
+
+    public HotSearchVO getHotSearchVO() {
+        QueryWrapper<HotSearch> queryWrapper = new QueryWrapper();
         queryWrapper.select("distinct keyword,count(keyword)as count").groupBy("keyword").orderByDesc("count");
-        List<HotSearch> hotSearchList=hotSearchMapper.selectList(queryWrapper);
+        List<HotSearch> hotSearchList = hotSearchMapper.selectList(queryWrapper);
         //get number one keyword
-        String keyword=hotSearchList.get(0).getKeyword();
+        String keyword = hotSearchList.get(0).getKeyword();
         //.....................
-        Map map=new HashMap();
-        map.put("keyword",keyword);
-        List<HotSearch> hotSearchList2=hotSearchMapper.selectByMap(map);
+        Map map = new HashMap();
+        map.put("keyword", keyword);
+        List<HotSearch> hotSearchList2 = hotSearchMapper.selectByMap(map);
         //get number
-        int number=hotSearchList2.size();
+        int number = hotSearchList2.size();
         //get vo
-        HotSearchVO hotSearchVO=new HotSearchVO();
+        HotSearchVO hotSearchVO = new HotSearchVO();
         hotSearchVO.setCount(number);
         hotSearchVO.setKeyWord(keyword);
         return hotSearchVO;

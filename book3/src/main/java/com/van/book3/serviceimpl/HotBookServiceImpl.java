@@ -27,42 +27,45 @@ import java.util.List;
 public class HotBookServiceImpl implements HotBookService {
     @Resource
     private HotBookMapper hotBookMapper;
-    public int insert(String openId,String title,String fileName){
-        HotBook hotBook=new HotBook();
+
+    public int insert(String openId, String title, String fileName) {
+        HotBook hotBook = new HotBook();
         hotBook.setFileName(fileName);
         hotBook.setOpenId(openId);
         hotBook.setTitle(title);
         return hotBookMapper.insert(hotBook);
     }
-    public Long pageNum(){
-        Page<HotBook>page=new Page<>(1,10);
-        QueryWrapper<HotBook> queryWrapper=new QueryWrapper();
+
+    public Long pageNum() {
+        Page<HotBook> page = new Page<>(1, 10);
+        QueryWrapper<HotBook> queryWrapper = new QueryWrapper();
         queryWrapper.select("distinct file_name as fileName,title,count(file_name)as num")
                 .groupBy("file_name")
                 .orderByDesc("num");
-        IPage iPage=hotBookMapper.selectPage(page,queryWrapper);
-        log.info("pageNum: {}",iPage.getPages());
+        IPage iPage = hotBookMapper.selectPage(page, queryWrapper);
+        log.info("pageNum: {}", iPage.getPages());
         return iPage.getPages();
     }
-    public ServerResponse hotSearch(){
+
+    public ServerResponse hotSearch() {
         //get records number
-        int pageNumber=pageNum().intValue();
-        int randomPage=RandomUtil.getRandomNum(pageNumber,1);
+        int pageNumber = pageNum().intValue();
+        int randomPage = RandomUtil.getRandomNum(pageNumber, 1);
         //....................................
-   Page<HotBook>page=new Page<>(randomPage,10,false);
-        QueryWrapper<HotBook> queryWrapper=new QueryWrapper();
+        Page<HotBook> page = new Page<>(randomPage, 10, false);
+        QueryWrapper<HotBook> queryWrapper = new QueryWrapper();
         queryWrapper.select("distinct file_name as fileName,title,count(file_name)as num")
                 .groupBy("file_name")
                 .orderByDesc("num");
-        IPage iPage=hotBookMapper.selectPage(page,queryWrapper);
-        List<HotBook> hotBookList=iPage.getRecords();
-        List<HotBookVO>hotBookVOList=new ArrayList<>();
+        IPage iPage = hotBookMapper.selectPage(page, queryWrapper);
+        List<HotBook> hotBookList = iPage.getRecords();
+        List<HotBookVO> hotBookVOList = new ArrayList<>();
         for (HotBook hotBook : hotBookList) {
-            HotBookVO hotBookVO=new HotBookVO();
+            HotBookVO hotBookVO = new HotBookVO();
             hotBookVO.setFileName(hotBook.getFileName());
             hotBookVO.setTitle(hotBook.getTitle());
             hotBookVOList.add(hotBookVO);
         }
-        return ServerResponse.success("查询成功",hotBookVOList);
+        return ServerResponse.success("查询成功", hotBookVOList);
     }
 }

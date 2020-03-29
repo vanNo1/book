@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 public class Shelf {
     @TableId
-    private int id  ;
+    private int id;
     private String fileName;
     private String openId;
     @TableField(fill = FieldFill.INSERT)

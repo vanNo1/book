@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 class Book3ApplicationTest {
     @Test
-    public void date(){
-        Date date=new Date();
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddhhmmss");
-        String now=simpleDateFormat.format(date);
-        long nowl=Long.valueOf(now);
+    public void date() {
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
+        String now = simpleDateFormat.format(date);
+        long nowl = Long.valueOf(now);
         System.out.println(nowl);
 
     }

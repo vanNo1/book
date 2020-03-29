@@ -30,30 +30,34 @@ public class BookMapperTest {
     private BookMapper bookMapper;
     @Resource
     private HotBookMapper hotBookMapper;
-@Test
-    public void test(){
-    Book book=bookMapper.selectById(1);
-    System.out.println(book);
-}
-@Test
-    public void insertUnzipPath(){
-    Map map=new HashMap();
-    List<Book>bookList=bookMapper.selectByMap(map);
-    for (Book book : bookList) {
-        book.setUnzipPath("/epub2/");
-        bookMapper.updateById(book);
-    }
-}
-@Test
-    public void qw(){
-    QueryWrapper<HotBook>  queryWrapper=new QueryWrapper();
-    queryWrapper.select("distinct file_name,count(file_name)as num").groupBy("file_name").orderByDesc("num");
-    List<HotBook>hotBookList= hotBookMapper.selectList(queryWrapper);
-    System.out.println(hotBookList);
 
-}
-@Test
-public void test2(){
-    hotBookService.pageNum();
-}
+    @Test
+    public void test() {
+        Book book = bookMapper.selectById(1);
+        System.out.println(book);
+    }
+
+    @Test
+    public void insertUnzipPath() {
+        Map map = new HashMap();
+        List<Book> bookList = bookMapper.selectByMap(map);
+        for (Book book : bookList) {
+            book.setUnzipPath("/epub2/");
+            bookMapper.updateById(book);
+        }
+    }
+
+    @Test
+    public void qw() {
+        QueryWrapper<HotBook> queryWrapper = new QueryWrapper();
+        queryWrapper.select("distinct file_name,count(file_name)as num").groupBy("file_name").orderByDesc("num");
+        List<HotBook> hotBookList = hotBookMapper.selectList(queryWrapper);
+        System.out.println(hotBookList);
+
+    }
+
+    @Test
+    public void test2() {
+        hotBookService.pageNum();
+    }
 }

@@ -30,11 +30,12 @@ public class AssembleVO {
     private RankServiceImpl rankService;
     @Resource
     private ShelfServiceImpl shelfService;
-    public  BookVO assembleBookVO(Book book,String openId){
-        if (book==null){
+
+    public BookVO assembleBookVO(Book book, String openId) {
+        if (book == null) {
             return null;
         }
-        BookVO bookVO=new BookVO();
+        BookVO bookVO = new BookVO();
         bookVO.setAuthor(book.getAuthor());
         bookVO.setCategory(book.getCategory());
         bookVO.setCategoryText(book.getCategoryText());
@@ -44,23 +45,23 @@ public class AssembleVO {
         bookVO.setLanguage(book.getLanguage());
         bookVO.setPublisher(book.getPublisher());
         bookVO.setRootFile(book.getRootFile());
-        bookVO.setOpf(Const.DOMAIN+book.getUnzipPath()+book.getFileName()+"/"+book.getRootFile());
+        bookVO.setOpf(Const.DOMAIN + book.getUnzipPath() + book.getFileName() + "/" + book.getRootFile());
         bookVO.setTitle(book.getTitle());
         bookVO.setRank(rankService.rank(openId));
         bookVO.setRankAvg(rankService.rankAvg(book.getFileName()));
         bookVO.setRankNum(rankService.rankNum(book.getFileName()));
         bookVO.setReaderNum(shelfService.findPeopleNum(book.getFileName()));
 
-        List<Shelf>shelfList=shelfService.getAllShelf(book.getFileName());
-        if (shelfList==null){
+        List<Shelf> shelfList = shelfService.getAllShelf(book.getFileName());
+        if (shelfList == null) {
             bookVO.setReaders(null);
-        }else {
+        } else {
             //if shelfList is not null
-            List<ReaderVO>readers=null;
+            List<ReaderVO> readers = null;
             //assemble readerVO and add to ReaderVOList
             for (Shelf shelf : shelfList) {
-                ReaderVO readerVO=new ReaderVO();
-                User user=userService.selectUserByOpenId(shelf.getOpenId());
+                ReaderVO readerVO = new ReaderVO();
+                User user = userService.selectUserByOpenId(shelf.getOpenId());
                 readerVO.setAvatarUrl(user.getAvatarUrl());
                 readerVO.setCreate_dt(shelf.getCreateTime());
                 readerVO.setNickName(user.getNickName());
@@ -68,13 +69,14 @@ public class AssembleVO {
             }
             bookVO.setReaders(readers);
         }
-       return bookVO;
+        return bookVO;
     }
-    public static BookSimplyVO assembleBookSimplyVO(Book book){
-        if (book==null){
+
+    public static BookSimplyVO assembleBookSimplyVO(Book book) {
+        if (book == null) {
             return null;
         }
-        BookSimplyVO bookSimplyVO=new BookSimplyVO();
+        BookSimplyVO bookSimplyVO = new BookSimplyVO();
         bookSimplyVO.setAuthor(book.getAuthor());
         bookSimplyVO.setBookId(book.getFileName());
         bookSimplyVO.setCategory(book.getCategory());

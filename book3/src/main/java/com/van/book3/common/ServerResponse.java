@@ -18,29 +18,34 @@ public class ServerResponse<T> implements Serializable {
     private String msg;
     private T data;
 
-    ServerResponse(int error_code,String msg,T data){
-        this.data=data;
-        this.error_code=error_code;
-        this.msg=msg;
+    ServerResponse(int error_code, String msg, T data) {
+        this.data = data;
+        this.error_code = error_code;
+        this.msg = msg;
     }
+
     @JsonIgnore
-    public  boolean isSuccess(){
-        if (this.error_code==Const.ServerResponse.SUCCESS_CODE){
+    public boolean isSuccess() {
+        if (this.error_code == Const.ServerResponse.SUCCESS_CODE) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
-    public static<T> ServerResponse<T> success(String msg,T data){
-        return new ServerResponse(Const.ServerResponse.SUCCESS_CODE,msg,data);
+
+    public static <T> ServerResponse<T> success(String msg, T data) {
+        return new ServerResponse(Const.ServerResponse.SUCCESS_CODE, msg, data);
     }
-    public static ServerResponse success(String msg){
-        return new ServerResponse(Const.ServerResponse.SUCCESS_CODE,msg,null);
+
+    public static ServerResponse success(String msg) {
+        return new ServerResponse(Const.ServerResponse.SUCCESS_CODE, msg, null);
     }
-    public static <T>ServerResponse<T>error(String msg){
-        return new ServerResponse(Const.ServerResponse.ERROR_CODE,msg,null);
+
+    public static <T> ServerResponse<T> error(String msg) {
+        return new ServerResponse(Const.ServerResponse.ERROR_CODE, msg, null);
     }
-    public static <T>ServerResponse<T>error(Integer error_code,String msg){
-        return new ServerResponse(error_code,msg,null);
+
+    public static <T> ServerResponse<T> error(Integer error_code, String msg) {
+        return new ServerResponse(error_code, msg, null);
     }
 }

@@ -13,9 +13,14 @@ import java.util.List;
  */
 public interface ShelfService {
     ServerResponse<List<ShelfVO>> get(String openId);
-    ServerResponse save(String fileName,String openId);
-    ServerResponse remove(String fileName,String openId);
+
+    ServerResponse save(String fileName, String openId);
+
+    ServerResponse remove(String fileName, String openId);
+
     Integer findPeopleNum(String fileName);
+
     List<Shelf> getAllShelf(String fileName);
+
     int getShelfNumber(String openId);
 }

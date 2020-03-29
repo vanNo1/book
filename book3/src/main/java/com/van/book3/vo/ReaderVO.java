@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
  */
 @Data
 public class ReaderVO implements Serializable {
-    private String  avatarUrl;
-    private String  nickName;
+    private String avatarUrl;
+    private String nickName;
     private LocalDateTime create_dt;
 
 }

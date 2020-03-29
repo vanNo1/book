@@ -25,36 +25,42 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class BookServiceImplTest {
-@Resource
+    @Resource
     private BookServiceImpl bookService;
-@Resource
+    @Resource
     private BookMapper bookMapper;
-@Test
-    public void recomment(){
-    bookService.recomment();
-}
-@Test
-    public void hotBook(){
-    bookService.hotBook();
-}
-@Test
-    public void search(){
-    bookService.search("2018",1,20);
-}
-@Test
-    public void map(){
-    Map map=new HashMap();
-    map.put("file_name",null);
-    List<Book>bookList=bookMapper.selectByMap(map);
-    System.out.println(bookList);
-    //find nothing.null can't search all
-}
-@Test
-    public void selectList(){
-    bookService.searchList(null,null,2,"o");
-}
-@Test
-    public void test(){
-    QueryWrapper queryWrapper=new QueryWrapper();
-}
+
+    @Test
+    public void recomment() {
+        bookService.recomment();
+    }
+
+    @Test
+    public void hotBook() {
+        bookService.hotBook();
+    }
+
+    @Test
+    public void search() {
+        bookService.search("2018", 1, 20);
+    }
+
+    @Test
+    public void map() {
+        Map map = new HashMap();
+        map.put("file_name", null);
+        List<Book> bookList = bookMapper.selectByMap(map);
+        System.out.println(bookList);
+        //find nothing.null can't search all
+    }
+
+    @Test
+    public void selectList() {
+        bookService.searchList(null, null, 2, "o");
+    }
+
+    @Test
+    public void test() {
+        QueryWrapper queryWrapper = new QueryWrapper();
+    }
 }

@@ -21,13 +21,14 @@ import javax.servlet.http.HttpSession;
 public class loginController {
     @Resource
     SignServiceImpl signService;
+
     @RequestMapping("/get")
-    public ServerResponse login(String code, String appId, String secret, HttpSession session){
-        if (code==null||appId==null||secret==null){
+    public ServerResponse login(String code, String appId, String secret, HttpSession session) {
+        if (code == null || appId == null || secret == null) {
             return ServerResponse.error("参数为空");
         }
-        ServerResponse<Sign> serverResponse= signService.getOpenId(code,appId,secret);
-        session.setAttribute(Const.CURRENT_USER,serverResponse.getData());
+        ServerResponse<Sign> serverResponse = signService.getOpenId(code, appId, secret);
+        session.setAttribute(Const.CURRENT_USER, serverResponse.getData());
 
         return serverResponse;
     }

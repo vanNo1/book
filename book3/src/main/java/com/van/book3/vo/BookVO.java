@@ -25,7 +25,7 @@ public class BookVO implements Serializable {
     private String opf;
     private List<ReaderVO> readers;//the readers who put this book in shelf
     private int readerNum;//who puts book in shelf
-    private int rank;
+    private Integer rank;
     private int rankNum;
     private double rankAvg;
 }

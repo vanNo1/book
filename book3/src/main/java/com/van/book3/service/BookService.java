@@ -12,9 +12,14 @@ import java.util.List;
  */
 public interface BookService {
     Book selectBookByFileName(String fileName);
+
     ServerResponse getDetail(String openId, String fileName);
+
     ServerResponse<List<BookSimplyVO>> recomment();
+
     ServerResponse<List<BookSimplyVO>> hotBook();
-    ServerResponse search(String keyword,int page,int pageSize);
-    ServerResponse searchList(String publisher,String category,Integer categoryId,String author);
+
+    ServerResponse search(String keyword, int page, int pageSize);
+
+    ServerResponse searchList(String publisher, String category, Integer categoryId, String author);
 }

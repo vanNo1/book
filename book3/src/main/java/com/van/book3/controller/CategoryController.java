@@ -17,8 +17,9 @@ import javax.annotation.Resource;
 public class CategoryController {
     @Resource
     private CategoryServiceImpl categoryService;
-    @RequestMapping("/list/v2")
-    public ServerResponse list(){
+
+    @RequestMapping("/list.do")
+    public ServerResponse list() {
         return categoryService.list();
     }
 }

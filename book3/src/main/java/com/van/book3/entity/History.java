@@ -2,21 +2,19 @@ package com.van.book3.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 /**
  * @author Van
- * @date 2020/3/7 - 12:19
+ * @date 2020/3/27 - 10:58
  */
 @Data
-public class Sign {
-    @TableId
-    int id;
-    String openId;
+public class History {
+    private int id;
+    private String openId;
+    private String fileName;
     @TableField(fill = FieldFill.INSERT)
-    LocalDateTime createTime;
+    private LocalDateTime createTime;
 }

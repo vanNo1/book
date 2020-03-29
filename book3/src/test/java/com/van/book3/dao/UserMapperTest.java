@@ -19,8 +19,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserMapperTest {
     @Resource
     private UserMapper userMapper;
-@Test
-    public void test(){
-    System.out.println(userMapper.selectById(5));
-}
+
+    @Test
+    public void test() {
+        System.out.println(userMapper.selectById(5));
+    }
 }

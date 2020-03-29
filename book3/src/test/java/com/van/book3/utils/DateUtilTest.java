@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class DateUtilTest {
-@Test
-    public  void test(){
-    System.out.println(DateUtil.now());
-}
+    @Test
+    public void test() {
+        System.out.println(DateUtil.now());
+    }
 }

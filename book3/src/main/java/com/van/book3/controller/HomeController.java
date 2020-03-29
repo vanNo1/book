@@ -21,18 +21,21 @@ public class HomeController {
 
     @Resource
     private BookServiceImpl bookService;
-    @RequestMapping(value = {"/recommend/v2","freeRead/v2"})
-    public ServerResponse recommend(){
+
+    @RequestMapping(value = {"/recommend/v2", "freeRead/v2"})
+    public ServerResponse recommend() {
         return bookService.recomment();
     }
+
     @RequestMapping("/hotBook/v2")
-    public ServerResponse hotBook(){
+    public ServerResponse hotBook() {
         return bookService.hotBook();
     }
+
     @RequestMapping("/v2")
-    public ServerResponse home(HttpSession session){
-    String openId= LoginUtil.getOpenId(session);
-    return bookService.getHomeData(openId);
+    public ServerResponse home(HttpSession session) {
+        String openId = LoginUtil.getOpenId(session);
+        return bookService.getHomeData(openId);
     }
 
 }

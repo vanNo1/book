@@ -7,5 +7,5 @@ import com.van.book3.entity.Contents;
  * @author Van
  * @date 2020/3/18 - 10:14
  */
-public interface ContentMapper extends BaseMapper<Contents>{
+public interface ContentMapper extends BaseMapper<Contents> {
 }

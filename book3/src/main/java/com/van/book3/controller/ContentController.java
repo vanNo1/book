@@ -25,12 +25,13 @@ public class ContentController {
     private BookServiceImpl bookService;
     @Resource
     private HotBookServiceImpl hotBookService;
+
     @RequestMapping("/contents")
-    public ServerResponse content(String fileName, HttpSession session){
-        if (LoginUtil.isLogin(session)){
-            Book book =bookService.selectBookByFileName(fileName);
-            hotBookService.insert(LoginUtil.getOpenId(session),book.getTitle(),book.getFileName());
+    public ServerResponse content(String fileName, HttpSession session) {
+        if (LoginUtil.isLogin(session)) {
+            Book book = bookService.selectBookByFileName(fileName);
+            hotBookService.insert(LoginUtil.getOpenId(session), book.getTitle(), book.getFileName());
         }
-    return contentService.content(fileName);
+        return contentService.content(fileName);
     }
 }

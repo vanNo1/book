@@ -10,20 +10,21 @@ import javax.servlet.http.HttpSession;
  * @date 2020/3/17 - 12:13
  */
 public class LoginUtil {
-    public static boolean isLogin (HttpSession session){
-        Sign sign=(Sign)session.getAttribute(Const.CURRENT_USER);
-        if (sign==null){
+    public static boolean isLogin(HttpSession session) {
+        Sign sign = (Sign) session.getAttribute(Const.CURRENT_USER);
+        if (sign == null) {
             return false;
-        }else {
+        } else {
             return true;
         }
 
     }
-    public static String getOpenId(HttpSession session){
-        Sign sign=(Sign)session.getAttribute(Const.CURRENT_USER);
-        if (sign==null){
+
+    public static String getOpenId(HttpSession session) {
+        Sign sign = (Sign) session.getAttribute(Const.CURRENT_USER);
+        if (sign == null) {
             return null;
-        }else {
+        } else {
             return sign.getOpenId();
         }
     }

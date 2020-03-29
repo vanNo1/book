@@ -17,8 +17,9 @@ import javax.servlet.http.HttpSession;
 public class RankController {
     @Resource
     private RankServiceImpl rankService;
+
     @RequestMapping("/save")
-    public ServerResponse save(String fileName, int rank, HttpSession session){
-        return rankService.save(fileName,rank,session);
+    public ServerResponse save(String fileName, int rank, HttpSession session) {
+        return rankService.save(fileName, rank, session);
     }
 }

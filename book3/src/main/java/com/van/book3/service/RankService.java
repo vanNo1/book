@@ -12,8 +12,12 @@ import java.util.List;
  */
 public interface RankService {
     ServerResponse save(String fileName, Integer rank, HttpSession session);
+
     Integer rank(String openId);
+
     double rankAvg(String fileName);
+
     int rankNum(String fileName);
+
     List<Book> getBookFromRank(int rank);
 }

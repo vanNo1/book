@@ -21,13 +21,14 @@ import java.util.Map;
 public class ContentServiceImpl implements ContentService {
     @Resource
     private ContentMapper contentMapper;
-    public ServerResponse content(String fileName){
-        Map map=new HashMap();
-        map.put("file_name",fileName);
-        List<Contents>contentsList=contentMapper.selectByMap(map);
-        if (contentsList.size()==0) {
+
+    public ServerResponse content(String fileName) {
+        Map map = new HashMap();
+        map.put("file_name", fileName);
+        List<Contents> contentsList = contentMapper.selectByMap(map);
+        if (contentsList.size() == 0) {
             return ServerResponse.error("没有找到该书");
         }
-        return ServerResponse.success("查询成功",contentsList);
+        return ServerResponse.success("查询成功", contentsList);
     }
 }

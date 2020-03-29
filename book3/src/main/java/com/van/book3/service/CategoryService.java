@@ -11,5 +11,6 @@ import java.util.List;
  */
 public interface CategoryService {
     int findNumberOfCategroy(int categoryId);
+
     ServerResponse<List<CategoryVO>> list();
 }

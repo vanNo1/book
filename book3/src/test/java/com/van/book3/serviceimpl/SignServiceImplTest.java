@@ -20,9 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class SignServiceImplTest {
     @Resource
     private SignServiceImpl signService;
-@Test
+
+    @Test
     public void test() {
 
 
-}
+    }
 }

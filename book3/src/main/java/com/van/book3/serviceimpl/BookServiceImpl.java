@@ -9,6 +9,7 @@ import com.van.book3.common.Const;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.BookMapper;
 import com.van.book3.entity.Book;
+import com.van.book3.entity.History;
 import com.van.book3.entity.Rank;
 import com.van.book3.service.BookService;
 import com.van.book3.service.RankService;
@@ -40,123 +41,137 @@ public class BookServiceImpl implements BookService {
     private BookMapper bookMapper;
     @Resource
     private HotSearchServiceImpl hotSearchService;
-    public Book selectBookByFileName(String fileName){
-        Map map=new HashMap();
-        map.put("file_name",fileName);
-        List<Book>bookList=bookMapper.selectByMap(map);
-        if (bookList.size()>0){
+    @Resource
+    private HistoryServiceImpl historyService;
+
+    public Book selectBookByFileName(String fileName) {
+        Map map = new HashMap();
+        map.put("file_name", fileName);
+        List<Book> bookList = bookMapper.selectByMap(map);
+        if (bookList.size() > 0) {
             return bookList.get(0);
-        }else {
+        } else {
             return null;
         }
     }
-    public ServerResponse getDetail(String openId,String fileName){
-        Book book=selectBookByFileName(fileName);
-        BookVO bookVO=assembleVO.assembleBookVO(book,openId);
-        if (bookVO==null){
-            return ServerResponse.error("获取失败");
-        }else {
-            return ServerResponse.success("获取成功",bookVO);
+
+    public ServerResponse getDetail(String openId, String fileName) {
+        Book book = selectBookByFileName(fileName);
+        if (openId != null) {
+            History history = new History();
+            history.setOpenId(openId);
+            history.setFileName(fileName);
+            historyService.insert(history);
+        }
+        BookVO bookVO = assembleVO.assembleBookVO(book, openId);
+        if (bookVO == null) {
+            return ServerResponse.error("获取失败,查无此书");
+        } else {
+            return ServerResponse.success("获取成功", bookVO);
         }
     }
+
     //get random books
-    public ServerResponse<List<BookSimplyVO>> recomment(){
-        Set<Integer> books= RandomUtil.getRandomSet(Const.MAXBOOKS,1,3);
-        List<BookSimplyVO>bookList=new ArrayList<>();
+    public ServerResponse<List<BookSimplyVO>> recomment() {
+        Set<Integer> books = RandomUtil.getRandomSet(Const.MAXBOOKS, 1, 3);
+        List<BookSimplyVO> bookList = new ArrayList<>();
         for (Integer bookId : books) {
-            Book book=bookMapper.selectById(bookId);
+            Book book = bookMapper.selectById(bookId);
             bookList.add(AssembleVO.assembleBookSimplyVO(book));
         }
-        return ServerResponse.success("查询成功",bookList);
+        return ServerResponse.success("查询成功", bookList);
 
     }
+
     //select three books which rank is 5 score
-    public ServerResponse<List<BookSimplyVO>> hotBook(){
+    public ServerResponse<List<BookSimplyVO>> hotBook() {
         //get books which score is 5
-        List<Book>bookList=rankService.getBookFromRank(5);
+        List<Book> bookList = rankService.getBookFromRank(5);
         //................................
-        List<BookSimplyVO>bookSimplyVOList=new ArrayList<>();
-        Set<Integer> set=RandomUtil.getRandomSet(bookList.size()-1,0,3);
+        List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
+        Set<Integer> set = RandomUtil.getRandomSet(bookList.size() - 1, 0, 3);
         for (Integer index : set) {
-            BookSimplyVO bookSimplyVO=AssembleVO.assembleBookSimplyVO(bookList.get(index));
+            BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(bookList.get(index));
             bookSimplyVOList.add(bookSimplyVO);
         }
-        return ServerResponse.success("查询成功",bookSimplyVOList);
+        return ServerResponse.success("查询成功", bookSimplyVOList);
     }
+
     //select page
-    public ServerResponse search(String keyword,int page,int pageSize){
-        if (keyword==null){
+    public ServerResponse search(String keyword, int page, int pageSize) {
+        if (keyword == null) {
             return ServerResponse.error("请输入关键字");
         }
-        QueryWrapper queryWrapper=new QueryWrapper();
-        queryWrapper.like("file_name",keyword);
-        Page<Book> bookPage=new Page<Book>(page,pageSize,false);
-        IPage iPage =bookMapper.selectPage(bookPage,queryWrapper);
-        List<Book>bookList=iPage.getRecords();
-        List<BookSimplyVO>bookSimplyVOList=new ArrayList<>();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.like("file_name", keyword);
+        Page<Book> bookPage = new Page<Book>(page, pageSize, false);
+        IPage iPage = bookMapper.selectPage(bookPage, queryWrapper);
+        List<Book> bookList = iPage.getRecords();
+        List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
         for (Book book : bookList) {
-            BookSimplyVO bookSimplyVO=AssembleVO.assembleBookSimplyVO(book);
+            BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(book);
             bookSimplyVOList.add(bookSimplyVO);
         }
-        return ServerResponse.success("查询成功",bookSimplyVOList);
-    }
-    //select by publisher category categoryId author
-    public ServerResponse searchList(String publisher,String category,Integer categoryId,String author){
-        QueryWrapper<Book> queryWrapper=new QueryWrapper();
-        if (publisher!=null){
-            queryWrapper.like("publisher",publisher);
-        }
-        if (category!=null){
-            queryWrapper.like("category_text",category);
-        }
-        if (categoryId!=null){
-            queryWrapper.eq("category",categoryId);
-        }
-        if (author!=null){
-            queryWrapper.like("author",author);
-        }
-        List<Book>bookList=bookMapper.selectList(queryWrapper);
-        List<BookSimplyVO>bookSimplyVOList=new ArrayList<>();
-        for (Book book : bookList) {
-            BookSimplyVO bookSimplyVO=AssembleVO.assembleBookSimplyVO(book);
-            bookSimplyVOList.add(bookSimplyVO);
-        }
-        return ServerResponse.success("查询成功",bookSimplyVOList);
+        return ServerResponse.success("查询成功", bookSimplyVOList);
     }
 
-    public ServerResponse getHomeData(String openId){
-        //shelf
-        List<ShelfVO>shelfVOList=new ArrayList<>();
-        if (openId==null){
-            shelfVOList=null;
-        }else {
-            shelfVOList= shelfService.get(openId).getData();
+    //select by publisher category categoryId author
+    public ServerResponse searchList(String publisher, String category, Integer categoryId, String author) {
+        QueryWrapper<Book> queryWrapper = new QueryWrapper();
+        if (publisher != null) {
+            queryWrapper.like("publisher", publisher);
         }
-         //category
-        List<CategoryVO>categoryVOList=categoryService.list().getData();
+        if (category != null) {
+            queryWrapper.like("category_text", category);
+        }
+        if (categoryId != null) {
+            queryWrapper.eq("category", categoryId);
+        }
+        if (author != null) {
+            queryWrapper.like("author", author);
+        }
+        List<Book> bookList = bookMapper.selectList(queryWrapper);
+        List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
+        for (Book book : bookList) {
+            BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(book);
+            bookSimplyVOList.add(bookSimplyVO);
+        }
+        return ServerResponse.success("查询成功", bookSimplyVOList);
+    }
+
+    public ServerResponse getHomeData(String openId) {
+        //shelf
+        List<ShelfVO> shelfVOList = new ArrayList<>();
+        if (openId == null) {
+            shelfVOList = null;
+        } else {
+            shelfVOList = shelfService.get(openId).getData();
+        }
+        //category
+        List<CategoryVO> categoryVOList = categoryService.list().getData();
         //recommend
-        List<BookSimplyVO>bookList=recomment().getData();
+        List<BookSimplyVO> bookList = recomment().getData();
         //hotbook
-        List<BookSimplyVO> hotBookList=hotBook().getData();
+        List<BookSimplyVO> hotBookList = hotBook().getData();
         //freeread
-        List<BookSimplyVO> freeRead=recomment().getData();
+        List<BookSimplyVO> freeRead = recomment().getData();
         //shelfCount
         int shelfCount;
-        if (openId==null){
-            shelfCount=0;
-        }else {
-            shelfCount=shelfService.getShelfNumber(openId);
+        if (openId == null) {
+            shelfCount = 0;
+        } else {
+            shelfCount = shelfService.getShelfNumber(openId);
         }
         //HotSearchVO
-        HotSearchVO hotSearchVO=hotSearchService.getHotSearchVO();
+        HotSearchVO hotSearchVO = hotSearchService.getHotSearchVO();
         //bannerVO
-        BannerVO bannerVO=new BannerVO();
+        BannerVO bannerVO = new BannerVO();
         bannerVO.setImg("https://www.youbaobao.xyz/book/res/bg.jpg");
         bannerVO.setSubTitle("马上学习");
         bannerVO.setTitle("mpvue2.0多端小程序课程重磅上线");
         bannerVO.setUrl("https://www.youbaobao.xyz/book/#/book-store/shelf");
         //get all
-        List<Object>all=new ArrayList<>();
+        List<Object> all = new ArrayList<>();
         all.add(shelfVOList);
         all.add(categoryVOList);
         all.add(bookList);
@@ -164,6 +179,6 @@ public class BookServiceImpl implements BookService {
         all.add(freeRead);
         all.add(shelfCount);
         all.add(hotSearchVO);
-        return ServerResponse.success("查询成功",all);
+        return ServerResponse.success("查询成功", all);
     }
 }

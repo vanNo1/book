@@ -24,43 +24,44 @@ public class SignServiceImpl implements SignService {
     @Resource
     private SignMapper signMapper;
 
-    public ServerResponse getOpenId(String code,String appId,String secret){
-        Map<String ,String > params=new HashMap<>();
-        params.put("appId",appId);
-        params.put("secret",secret);
-        params.put("code",code);
-        String url="https://api.weixin.qq.com/sns/jscode2session?appid={appId}&secret={secret}&js_code={code}&grant_type=authorization_code";
-        RestTemplate restTemplate=new RestTemplate();
-        String openidString= restTemplate.getForObject(url,String.class,params);
-        log.info("have already get openid: ",openidString);
+    public ServerResponse getOpenId(String code, String appId, String secret) {
+        Map<String, String> params = new HashMap<>();
+        params.put("appId", appId);
+        params.put("secret", secret);
+        params.put("code", code);
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid={appId}&secret={secret}&js_code={code}&grant_type=authorization_code";
+        RestTemplate restTemplate = new RestTemplate();
+        String openidString = restTemplate.getForObject(url, String.class, params);
+        log.info("have already get openid: ", openidString);
         //have already get openid.....................
-        Gson gson=new Gson();
-        Sign openid= gson.fromJson(openidString, Sign.class);
+        Gson gson = new Gson();
+        Sign openid = gson.fromJson(openidString, Sign.class);
         //translate to entity...........................
         //1.if openid is not null
-        if (openid.getOpenId()!=null){
+        if (openid.getOpenId() != null) {
             //1.if openid is not duplicate
-            if (!isDuplicate(openid.getOpenId())){
+            if (!isDuplicate(openid.getOpenId())) {
                 //build Sign entity
                 signMapper.insert(openid);
                 //.............................insert to database
 
             }
 
-            return ServerResponse.success("获取openId成功",openid);
+            return ServerResponse.success("获取openId成功", openid);
 
         }
         //2. if openid is null
         return ServerResponse.error("获取openId失败");
 
     }
-    public boolean isDuplicate(String openid){
-        Map map=new HashMap();
-        map.put("open_id",openid);
-        List<Sign>signList=signMapper.selectByMap(map);
-        if (signList.size()>0){
+
+    public boolean isDuplicate(String openid) {
+        Map map = new HashMap();
+        map.put("open_id", openid);
+        List<Sign> signList = signMapper.selectByMap(map);
+        if (signList.size() > 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

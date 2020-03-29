@@ -27,19 +27,21 @@ public class CategoryServiceImpl implements CategoryService {
     private BookMapper bookMapper;
     @Resource
     private CategoryMapper categoryMapper;
+
     //find how much number of books a category contains
-    public int findNumberOfCategroy(int categoryId){
-        Map map=new HashMap();
-        map.put("category",categoryId);
-        List<Book>bookList=bookMapper.selectByMap(map);
+    public int findNumberOfCategroy(int categoryId) {
+        Map map = new HashMap();
+        map.put("category", categoryId);
+        List<Book> bookList = bookMapper.selectByMap(map);
         return bookList.size();
     }
-    public ServerResponse<List<CategoryVO>> list(){
-        Map map=new HashMap();
-        List<Category>categoryList=categoryMapper.selectByMap(map);
-        List<CategoryVO>categoryVOList=new ArrayList<>();
+
+    public ServerResponse<List<CategoryVO>> list() {
+        Map map = new HashMap();
+        List<Category> categoryList = categoryMapper.selectByMap(map);
+        List<CategoryVO> categoryVOList = new ArrayList<>();
         for (Category categoryItem : categoryList) {
-            CategoryVO categoryVO=new CategoryVO();
+            CategoryVO categoryVO = new CategoryVO();
             categoryVO.setCover(categoryItem.getCover());
             categoryVO.setCategory(categoryItem.getCategory());
             categoryVO.setCategoryText(categoryItem.getCategoryText());
@@ -47,6 +49,6 @@ public class CategoryServiceImpl implements CategoryService {
             categoryVO.setNum(findNumberOfCategroy(categoryItem.getCategory()));
             categoryVOList.add(categoryVO);
         }
-        return ServerResponse.success("查询成功",categoryVOList);
+        return ServerResponse.success("查询成功", categoryVOList);
     }
 }
