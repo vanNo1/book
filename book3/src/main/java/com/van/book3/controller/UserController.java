@@ -1,23 +1,29 @@
 package com.van.book3.controller;
 
+import com.sun.org.apache.bcel.internal.classfile.Code;
+import com.van.book3.common.CodeMsg;
 import com.van.book3.common.Const;
 import com.van.book3.common.ServerResponse;
+import com.van.book3.dto.ChangePasswordVO;
+import com.van.book3.dto.LoginDTO;
 import com.van.book3.entity.User;
+import com.van.book3.exception.GlobalException;
 import com.van.book3.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * @author Van
  * @date 2020/3/7 - 14:28
  */
+@Validated
 @Slf4j
 @RestController
 @RequestMapping(value = "/user")
@@ -26,7 +32,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ServerResponse register(User user) {
+    public ServerResponse register(@Validated User user) {
         return userService.register(user);
     }
 
@@ -35,41 +41,46 @@ public class UserController {
         return userService.getDay(openId);
     }
 
+
     @RequestMapping("/login.do")
-    public ServerResponse login(String openId, String username, String password, HttpSession session) {
+    public ServerResponse login(@Validated LoginDTO loginDTO, HttpSession session) {
+        String openId=loginDTO.getOpenId();
+        String username=loginDTO.getUsername();
+        String password=loginDTO.getPassword();
         ServerResponse serverResponse = userService.login(openId, username, password);
-        if (!serverResponse.isSuccess()) {
-            return serverResponse;
-        }
+        //only success will get here because error is already throw Exception
         session.setAttribute(openId, Const.CURRENT_USER);
-        return ServerResponse.success("用户登录成功");
+        return serverResponse;
     }
 
     @RequestMapping("/logout.do")
-    public ServerResponse logout(String openId, HttpSession session) {
+    public ServerResponse logout(@NotEmpty String openId, HttpSession session) {
         String result = (String) session.getAttribute(openId);
         if (result == null) {
-            return ServerResponse.error("用户未登录退出失败");
+            throw new GlobalException(CodeMsg.NOT_LOGIN);
         }
         session.removeAttribute(openId);
         return ServerResponse.success("用户退出成功");
     }
 
     @RequestMapping("/forget_password.do")
-    public ServerResponse forgetPassword(String openId, String answer) {
+    public ServerResponse forgetPassword(@NotEmpty String openId,@NotEmpty String answer) {
         return userService.forgetPassword(openId, answer);
     }
 
     @RequestMapping("/forget_reset_password.do")
-    public ServerResponse forgetRestPassword(String openId, String newPassword) {
-        String token = "token_" + openId;
+    public ServerResponse forgetRestPassword(@NotEmpty String openId,@NotEmpty String newPassword) {
+        String token = Const.TOKEN_PREFIX + openId;
 
         return userService.forgetPasswordAndChangePassword(openId, token, newPassword);
     }
 
     @RequestMapping("/change_password.do")
-    public ServerResponse changePassword(String username, String oldPassword, String newPassword, String openId) {
-        //todo if user is login
-        return userService.changePassword(username, oldPassword, newPassword, openId);
+    public ServerResponse changePassword(@Validated ChangePasswordVO vo) {
+        if (vo.getNewPassword().equals(vo.getOldPassword())){
+            throw new GlobalException(CodeMsg.SAME_PASSWORD);
+        }
+        //todo validate user's login
+        return userService.changePassword(vo.getUsername(), vo.getOldPassword(), vo.getNewPassword(), vo.getOpenId());
     }
 }

@@ -1,9 +1,11 @@
 package com.van.book3.serviceimpl;
 
 import com.google.gson.Gson;
+import com.van.book3.common.CodeMsg;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.SignMapper;
 import com.van.book3.entity.Sign;
+import com.van.book3.exception.GlobalException;
 import com.van.book3.service.SignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,7 +53,7 @@ public class SignServiceImpl implements SignService {
 
         }
         //2. if openid is null
-        return ServerResponse.error("获取openId失败");
+        throw new GlobalException(CodeMsg.OPENID_FAIL);
 
     }
 

@@ -23,6 +23,11 @@ public class ServerResponse<T> implements Serializable {
         this.error_code = error_code;
         this.msg = msg;
     }
+    ServerResponse(CodeMsg codeMsg){
+        this.error_code=codeMsg.getCode();
+        this.msg=codeMsg.getMsg();
+        this.data=null;
+    }
 
     @JsonIgnore
     public boolean isSuccess() {
@@ -31,6 +36,9 @@ public class ServerResponse<T> implements Serializable {
         } else {
             return false;
         }
+    }
+    public static ServerResponse<CodeMsg>error(CodeMsg codeMsg){
+        return new ServerResponse(codeMsg);
     }
 
     public static <T> ServerResponse<T> success(String msg, T data) {

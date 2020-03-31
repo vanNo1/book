@@ -1,11 +1,12 @@
 package com.van.book3.serviceimpl;
 
+import com.van.book3.common.CodeMsg;
 import com.van.book3.common.Const;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.UserMapper;
 import com.van.book3.entity.User;
+import com.van.book3.exception.GlobalException;
 import com.van.book3.service.UserService;
-import com.van.book3.utils.DateUtil;
 import com.van.book3.utils.RedisPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -56,22 +56,14 @@ public class UserServiceImpl implements UserService {
 
         //if user's is already register
         if (isDupilicate(user.getOpenId())) {
-            return ServerResponse.error(Const.DUPLICATE, "用户注册失败,用户已存在(openid is duplicate)");
+            throw new GlobalException(CodeMsg.DUPLICATE_USER);
         }
-        //if the param is invalid
-        if (user.getOpenId() == null || user.getUsername() == null || user.getPassword() == null || user.getAnswer() == null || user.getQuestion() == null) {
-            return ServerResponse.error(Const.ISNULL, "必要参数没传");
-        }
+        //insert user to DB
         try {
-            int count = userMapper.insert(user);
-            if (count > 0) {
-                return ServerResponse.success("用户注册成功", null);
-            } else {
-                return ServerResponse.error("用户注册失败");
-            }
+            userMapper.insert(user);
+            return ServerResponse.success("用户注册成功");
         } catch (Exception e) {
-            log.info("插入异常", e);
-            return ServerResponse.error(Const.SYSTEMERROR, "插入异常");
+            throw new GlobalException(CodeMsg.DB_ERROR);
         }
 
     }
@@ -102,53 +94,44 @@ public class UserServiceImpl implements UserService {
 
     public ServerResponse changePassword(String username, String oldPassword, String newPassword, String openId) {
 
-        //param is invalid
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(oldPassword) || StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(openId)) {
-            return ServerResponse.error(Const.ISNULL, "缺少必要参数");
-        }
         User user = findUserByOpenId(openId);
         if (user == null) {
-            return ServerResponse.error("用户不存在");
+            throw new GlobalException(CodeMsg.NOT_EXIST);
         }
         if (!(username.equals(user.getUsername()) && oldPassword.equals(user.getPassword()))) {
-            return ServerResponse.error("用户名或密码有误");
+            throw new GlobalException(CodeMsg.INVALID);
         }
         //ok
         user.setPassword(newPassword);
-
-        try {
-            userMapper.updateById(user);
-            return ServerResponse.success("密码更新成功", null);
-        } catch (Exception e) {
-            log.error("插入异常", e);
-            return ServerResponse.error(Const.SYSTEMERROR, "插入异常");
-        }
-
+        userMapper.updateById(user);
+        return ServerResponse.success("密码更新成功");
     }
 
     public ServerResponse forgetPassword(String openId, String answer) {
         User user = findUserByOpenId(openId);
+        //if user is not exist
         if (user == null) {
-            return ServerResponse.error("用户不存在");
+            throw new GlobalException(CodeMsg.NOT_EXIST);
         }
+        //if answer is wrong
         if (!answer.equals(user.getAnswer())) {
-            return ServerResponse.error("问题错误");
+            throw new GlobalException(CodeMsg.WRONG_ANSWER);
         }
         //answer is right
         //forget token is 5 minute
         String forgetToken = UUID.randomUUID().toString();
-        RedisPoolUtil.setEx("token_" + openId, forgetToken, 60 * 5);
-        return ServerResponse.success("回答正确，返回forgetToken", forgetToken);
+        RedisPoolUtil.setEx(Const.TOKEN_PREFIX + openId, forgetToken, 60 * 5);
+        return ServerResponse.success("回答正确");
     }
 
     public ServerResponse forgetPasswordAndChangePassword(String openId, String forgetToken, String newPassword) {
         User user = findUserByOpenId(openId);
         if (user == null) {
-            return ServerResponse.error("用户不存在");
+            throw new GlobalException(CodeMsg.NOT_EXIST);
         }
         String value = RedisPoolUtil.get(forgetToken);
         if (value == null) {
-            return ServerResponse.error("forToken无效（超时或不正确）");
+            throw new GlobalException(CodeMsg.TOKEN_EXPIRE);
         }
         //if ok
         user.setPassword(newPassword);
@@ -159,11 +142,11 @@ public class UserServiceImpl implements UserService {
     public ServerResponse login(String openId, String username, String password) {
         User user = findUserByOpenId(openId);
         if (user == null) {
-            return ServerResponse.error("用户不存在");
+            throw new GlobalException(CodeMsg.NOT_EXIST);
         }
         if (!(user.getUsername().equals(username) && user.getPassword().equals(password))) {
-            return ServerResponse.error("用户名或密码错误");
+            throw new GlobalException(CodeMsg.INVALID);
         }
-        return ServerResponse.success("用户名密码正确");
+        return ServerResponse.success("登录成功");
     }
 }
