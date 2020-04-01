@@ -12,7 +12,7 @@ import java.util.List;
  * @date 2020/3/16 - 13:05
  */
 public interface ShelfService {
-    ServerResponse<List<ShelfVO>> get(String openId);
+    ServerResponse<List<ShelfVO>> get(String fileName,String openId);
 
     ServerResponse save(String fileName, String openId);
 

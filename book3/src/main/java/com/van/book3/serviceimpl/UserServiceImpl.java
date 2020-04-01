@@ -83,13 +83,13 @@ public class UserServiceImpl implements UserService {
         User user = selectUserByOpenId(openId);
         //if user is not exist
         if (user == null) {
-            return ServerResponse.error("找不到该用户");
+            throw new GlobalException(CodeMsg.NOT_EXIST);
         }
         Duration duration = Duration.between(user.getCreateTime(), LocalDateTime.now());
         long days = duration.toDays();
         Map map = new HashMap();
         map.put("day", days);
-        return ServerResponse.success("用户注册成功", map);
+        return ServerResponse.success("获取用户信息成功", map);
     }
 
     public ServerResponse changePassword(String username, String oldPassword, String newPassword, String openId) {

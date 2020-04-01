@@ -2,7 +2,10 @@ package com.van.book3.serviceimpl;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.van.book3.common.CodeMsg;
 import com.van.book3.common.Const;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.BookMapper;
@@ -10,6 +13,7 @@ import com.van.book3.dao.RankMapper;
 import com.van.book3.entity.Book;
 import com.van.book3.entity.Rank;
 import com.van.book3.entity.Sign;
+import com.van.book3.exception.GlobalException;
 import com.van.book3.service.RankService;
 import com.van.book3.utils.LoginUtil;
 import org.springframework.stereotype.Service;
@@ -32,21 +36,23 @@ public class RankServiceImpl implements RankService {
     private RankMapper rankMapper;
     @Resource
     private BookMapper bookMapper;
+    @Resource
+    private BookServiceImpl bookService;
 
-    public ServerResponse save(String fileName, Integer rank, HttpSession session) {
-        if (!LoginUtil.isLogin(session)) {
-            return ServerResponse.error("用户未登录");
+    public ServerResponse save(String fileName, Integer rank, String openId) {
+        Book book=bookService.selectBookByFileName(fileName);
+        if (book==null){
+            throw new GlobalException(CodeMsg.BOOK_NOT_EXIST);
         }
-        String openId = LoginUtil.getOpenId(session);
         Rank userRank = new Rank();
         userRank.setFileName(fileName);
         userRank.setOpenId(openId);
         userRank.setRank(rank);
         int count = rankMapper.insert(userRank);
-        if (count > 1) {
-            return ServerResponse.success("保存评分成功", null);
+        if (count > 0) {
+            return ServerResponse.success("保存评分成功");
         } else {
-            return ServerResponse.error("保存评分失败");
+            throw new GlobalException(CodeMsg.RANK_SAVE_FAIL);
         }
 
     }
@@ -90,12 +96,17 @@ public class RankServiceImpl implements RankService {
         }
     }
 
-    public List<Book> getBookFromRank(int rank) {
+    public List<Book> getHighRankBook(int rank) {
         //get all the names
-        Map map = new HashMap();
-        map.put("rank", rank);
+
+        QueryWrapper<Rank>rankQueryWrapper=new QueryWrapper<>();
+        rankQueryWrapper.select("count(*) as nums,file_name,open_id,rank")
+                .eq("rank",5).groupBy("file_name")
+                .orderByDesc("nums");
+        Page<Rank>rankPage=new Page<>(1,3,false);
+        IPage<Rank> iPage =rankMapper.selectPage(rankPage,rankQueryWrapper);
+        List<Rank> rankList=iPage.getRecords();
         List<String> bookNameList = new ArrayList<>();
-        List<Rank> rankList = rankMapper.selectByMap(map);
         for (Rank rankItem : rankList) {
             bookNameList.add(rankItem.getFileName());
         }

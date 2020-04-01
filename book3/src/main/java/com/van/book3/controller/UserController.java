@@ -49,7 +49,7 @@ public class UserController {
         String password=loginDTO.getPassword();
         ServerResponse serverResponse = userService.login(openId, username, password);
         //only success will get here because error is already throw Exception
-        session.setAttribute(openId, Const.CURRENT_USER);
+        session.setAttribute(Const.CURRENT_USER,openId);
         return serverResponse;
     }
 
@@ -80,7 +80,6 @@ public class UserController {
         if (vo.getNewPassword().equals(vo.getOldPassword())){
             throw new GlobalException(CodeMsg.SAME_PASSWORD);
         }
-        //todo validate user's login
         return userService.changePassword(vo.getUsername(), vo.getOldPassword(), vo.getNewPassword(), vo.getOpenId());
     }
 }

@@ -4,7 +4,6 @@ import com.van.mall.common.RedissonManager;
 import com.van.mall.util.RedisLockUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -28,7 +27,7 @@ public class Job {
         RedisLockUtil.unLock("key", time);
     }
 
-    @Scheduled(cron = "*/5 * * * * ?")
+//    @Scheduled(cron = "*/5 * * * * ?")
     public void clean2() {
         RLock lock = redissonManager.getRedisson().getLock("key");
         boolean getLock = false;

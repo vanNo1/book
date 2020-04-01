@@ -3,6 +3,7 @@ package com.van.book3.serviceimpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.van.book3.common.CodeMsg;
 import com.van.book3.common.Const;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.ShelfMapper;
@@ -10,9 +11,11 @@ import com.van.book3.entity.Book;
 import com.van.book3.entity.Shelf;
 import com.van.book3.entity.Sign;
 import com.van.book3.entity.User;
+import com.van.book3.exception.GlobalException;
 import com.van.book3.service.BookService;
 import com.van.book3.service.ShelfService;
 import com.van.book3.vo.ShelfVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -51,16 +54,25 @@ public class ShelfServiceImpl implements ShelfService {
         return shelfVO;
     }
 
-    public ServerResponse<List<ShelfVO>> get(String openId) {
+    public ServerResponse<List<ShelfVO>> get(String fileName,String openId) {
 
-        // get all shelfs of a user
-        if (openId != null) {
+        //get one shelf
+            if (StringUtils.isNotEmpty(fileName)){
+                Map map=new HashMap();
+                map.put("file_name",fileName);
+                map.put("open_id",openId);
+                List<Shelf>shelfList=shelfMapper.selectByMap(map);
+                if(shelfList.size()==0){
+                    throw new GlobalException(CodeMsg.SHELF_NOT_EXIST);
+                }
+            }
+        // get all shelf
             Map map = new HashMap();
             map.put("open_id", openId);
             List<Shelf> shelfList = shelfMapper.selectByMap(map);
             //if this user's shelf is empty
             if (shelfList.size() == 0) {
-                return ServerResponse.error("书架为空");
+                throw new GlobalException(CodeMsg.SHELF_EMPTY);
             }
             //if this user's shelf is not empty
             List<ShelfVO> shelfVOList = new ArrayList<>();
@@ -71,46 +83,39 @@ public class ShelfServiceImpl implements ShelfService {
                 shelfVOList.add(shelfVO);
             }
             return ServerResponse.success("书架获取成功", shelfVOList);
-        } else {
-
-            return ServerResponse.error("用户未登录获取不到书架");
-        }
-
-
     }
 
     public ServerResponse save(String fileName, String openId) {
-        if (fileName == null || openId == null) {
-            return ServerResponse.error("参数错误");
-        }
         Map map = new HashMap();
+        //if fileName is wrong
+        Book book=bookService.selectBookByFileName(fileName);
+        if (book==null){
+            throw new GlobalException(CodeMsg.BOOK_NOT_EXIST);
+        }
         map.put("file_name", fileName);
         map.put("open_id", openId);
         List<Shelf> shelfList = shelfMapper.selectByMap(map);
         if (shelfList.size() > 0) {
-            return ServerResponse.error("已经存在");
+           throw new GlobalException(CodeMsg.SHELF_DUPLICATE);
         }
         //insert to shelf
         Shelf shelf = new Shelf();
         shelf.setFileName(fileName);
         shelf.setOpenId(openId);
         shelfMapper.insert(shelf);
-        return ServerResponse.success("加入书架成功", null);
+        return ServerResponse.success("加入书架成功");
     }
 
     public ServerResponse remove(String fileName, String openId) {
-        if (fileName == null || openId == null) {
-            return ServerResponse.error("参数错误");
-        }
+
         Map map = new HashMap();
         map.put("file_name", fileName);
         map.put("open_id", openId);
         int count = shelfMapper.deleteByMap(map);
         if (count == 0) {
-            return ServerResponse.error("删除失败");
+            throw new GlobalException(CodeMsg.SHELF_REMOVE_FAIL);
         } else {
-            return ServerResponse.success("删除成功", null);
-
+            return ServerResponse.success("移出书架成功");
         }
     }
 

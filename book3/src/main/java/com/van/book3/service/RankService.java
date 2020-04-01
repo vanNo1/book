@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2020/3/17 - 12:10
  */
 public interface RankService {
-    ServerResponse save(String fileName, Integer rank, HttpSession session);
+    ServerResponse save(String fileName, Integer rank, String openId);
 
     Integer rank(String openId);
 
@@ -19,5 +19,5 @@ public interface RankService {
 
     int rankNum(String fileName);
 
-    List<Book> getBookFromRank(int rank);
+    List<Book> getHighRankBook(int rank);
 }

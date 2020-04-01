@@ -86,12 +86,12 @@ public class BookServiceImpl implements BookService {
     //select three books which rank is 5 score
     public ServerResponse<List<BookSimplyVO>> hotBook() {
         //get books which score is 5
-        List<Book> bookList = rankService.getBookFromRank(5);
+        List<Book> bookList = rankService.getHighRankBook(5);
         //................................
         List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
-        Set<Integer> set = RandomUtil.getRandomSet(bookList.size() - 1, 0, 3);
-        for (Integer index : set) {
-            BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(bookList.get(index));
+        //bookList have only three books
+        for (Book book : bookList) {
+            BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(book);
             bookSimplyVOList.add(bookSimplyVO);
         }
         return ServerResponse.success("查询成功", bookSimplyVOList);
@@ -145,7 +145,7 @@ public class BookServiceImpl implements BookService {
         if (openId == null) {
             shelfVOList = null;
         } else {
-            shelfVOList = shelfService.get(openId).getData();
+            shelfVOList = shelfService.get(null,openId).getData();
         }
         //category
         List<CategoryVO> categoryVOList = categoryService.list().getData();
