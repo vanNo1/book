@@ -1,7 +1,9 @@
 package com.van.book3.controller;
 
+import com.van.book3.common.CodeMsg;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.entity.Book;
+import com.van.book3.exception.GlobalException;
 import com.van.book3.serviceimpl.BookServiceImpl;
 import com.van.book3.serviceimpl.ContentServiceImpl;
 import com.van.book3.serviceimpl.HotBookServiceImpl;
@@ -30,6 +32,9 @@ public class ContentController {
     public ServerResponse content(String fileName, HttpSession session) {
         if (LoginUtil.isLogin(session)) {
             Book book = bookService.selectBookByFileName(fileName);
+            if (book==null){
+                throw new GlobalException(CodeMsg.BOOK_NOT_EXIST);
+            }
             hotBookService.insert(LoginUtil.getOpenId(session), book.getTitle(), book.getFileName());
         }
         return contentService.content(fileName);

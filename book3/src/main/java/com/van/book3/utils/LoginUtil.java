@@ -11,8 +11,8 @@ import javax.servlet.http.HttpSession;
  */
 public class LoginUtil {
     public static boolean isLogin(HttpSession session) {
-        Sign sign = (Sign) session.getAttribute(Const.CURRENT_USER);
-        if (sign == null) {
+        String  openId = (String) session.getAttribute(Const.CURRENT_USER);
+        if (openId == null) {
             return false;
         } else {
             return true;
@@ -21,11 +21,11 @@ public class LoginUtil {
     }
 
     public static String getOpenId(HttpSession session) {
-        Sign sign = (Sign) session.getAttribute(Const.CURRENT_USER);
-        if (sign == null) {
+        String openId = (String) session.getAttribute(Const.CURRENT_USER);
+        if (openId == null) {
             return null;
         } else {
-            return sign.getOpenId();
+            return openId;
         }
     }
 

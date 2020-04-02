@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Sets;
+import com.van.book3.common.CodeMsg;
 import com.van.book3.common.Const;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.BookMapper;
 import com.van.book3.entity.Book;
 import com.van.book3.entity.History;
 import com.van.book3.entity.Rank;
+import com.van.book3.exception.GlobalException;
 import com.van.book3.service.BookService;
 import com.van.book3.service.RankService;
 import com.van.book3.utils.AssembleVO;
@@ -99,14 +101,16 @@ public class BookServiceImpl implements BookService {
 
     //select page
     public ServerResponse search(String keyword, int page, int pageSize) {
-        if (keyword == null) {
-            return ServerResponse.error("请输入关键字");
-        }
+
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.like("file_name", keyword);
         Page<Book> bookPage = new Page<Book>(page, pageSize, false);
         IPage iPage = bookMapper.selectPage(bookPage, queryWrapper);
         List<Book> bookList = iPage.getRecords();
+        //if book is not exist
+        if (bookList.size()==0){
+            throw new GlobalException(CodeMsg.BOOK_NOT_EXIST);
+        }
         List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
         for (Book book : bookList) {
             BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(book);
@@ -140,21 +144,31 @@ public class BookServiceImpl implements BookService {
     }
 
     public ServerResponse getHomeData(String openId) {
+        HomeVO homeVO=new HomeVO();
         //shelf
         List<ShelfVO> shelfVOList = new ArrayList<>();
         if (openId == null) {
             shelfVOList = null;
         } else {
-            shelfVOList = shelfService.get(null,openId).getData();
+            try {
+                shelfVOList = shelfService.get(null,openId).getData();
+            } catch (Exception e) {
+                shelfVOList=null;
+            }
         }
+        homeVO.setShelf(shelfVOList);
         //category
         List<CategoryVO> categoryVOList = categoryService.list().getData();
+        homeVO.setCategory(categoryVOList);
         //recommend
         List<BookSimplyVO> bookList = recomment().getData();
+        homeVO.setRecommend(bookList);
         //hotbook
         List<BookSimplyVO> hotBookList = hotBook().getData();
+        homeVO.setHotBook(hotBookList);
         //freeread
         List<BookSimplyVO> freeRead = recomment().getData();
+        homeVO.setFreeRead(freeRead);
         //shelfCount
         int shelfCount;
         if (openId == null) {
@@ -162,23 +176,19 @@ public class BookServiceImpl implements BookService {
         } else {
             shelfCount = shelfService.getShelfNumber(openId);
         }
+        homeVO.setShelfCount(shelfCount);
         //HotSearchVO
+        //todo hotsearch
         HotSearchVO hotSearchVO = hotSearchService.getHotSearchVO();
+        homeVO.setHotSearch(hotSearchVO);
         //bannerVO
         BannerVO bannerVO = new BannerVO();
         bannerVO.setImg("https://www.youbaobao.xyz/book/res/bg.jpg");
         bannerVO.setSubTitle("马上学习");
         bannerVO.setTitle("mpvue2.0多端小程序课程重磅上线");
         bannerVO.setUrl("https://www.youbaobao.xyz/book/#/book-store/shelf");
-        //get all
-        List<Object> all = new ArrayList<>();
-        all.add(shelfVOList);
-        all.add(categoryVOList);
-        all.add(bookList);
-        all.add(hotBookList);
-        all.add(freeRead);
-        all.add(shelfCount);
-        all.add(hotSearchVO);
-        return ServerResponse.success("查询成功", all);
+        homeVO.setBanenr(bannerVO);
+
+        return ServerResponse.success("查询成功", homeVO);
     }
 }

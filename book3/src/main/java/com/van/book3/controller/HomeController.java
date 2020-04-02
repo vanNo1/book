@@ -1,5 +1,6 @@
 package com.van.book3.controller;
 
+
 import com.van.book3.common.ServerResponse;
 import com.van.book3.serviceimpl.BookServiceImpl;
 import com.van.book3.serviceimpl.HotSearchServiceImpl;
@@ -34,8 +35,11 @@ public class HomeController {
 
     @RequestMapping("/v2")
     public ServerResponse home(HttpSession session) {
+        //QPS:19.6 200线程跑10次 (无任何优化)
+        //QPS:36.7 20线程跑1次 启动2s 启动如果为0 程序会崩，后面就访问不了了（把category加入了redis）
         String openId = LoginUtil.getOpenId(session);
         return bookService.getHomeData(openId);
+
     }
 
 }

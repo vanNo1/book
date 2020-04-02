@@ -1,8 +1,10 @@
 package com.van.book3.serviceimpl;
 
+import com.van.book3.common.CodeMsg;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.ContentMapper;
 import com.van.book3.entity.Contents;
+import com.van.book3.exception.GlobalException;
 import com.van.book3.service.ContentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class ContentServiceImpl implements ContentService {
         map.put("file_name", fileName);
         List<Contents> contentsList = contentMapper.selectByMap(map);
         if (contentsList.size() == 0) {
-            return ServerResponse.error("没有找到该书");
+            throw new GlobalException(CodeMsg.BOOK_NOT_EXIST);
         }
         return ServerResponse.success("查询成功", contentsList);
     }

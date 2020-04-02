@@ -9,12 +9,14 @@ import com.van.book3.serviceimpl.BookServiceImpl;
 import com.van.book3.serviceimpl.HotBookServiceImpl;
 import com.van.book3.serviceimpl.HotSearchServiceImpl;
 import com.van.book3.utils.LoginUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 /**
@@ -22,6 +24,7 @@ import java.io.Serializable;
  * @date 2020/3/17 - 16:02
  */
 @RestController
+@Validated
 public class BookController {
     @Resource
     private HotBookServiceImpl hotBookService;
@@ -38,7 +41,7 @@ public class BookController {
 
     //搜索
     @RequestMapping("/search")
-    public ServerResponse search(HttpSession session, String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int pageSize) {
+    public ServerResponse search(HttpSession session, @NotEmpty String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int pageSize) {
         //is user is login then insert keyword to databse;
         if (LoginUtil.isLogin(session)) {
             hotSearchService.insert(keyword, LoginUtil.getOpenId(session));

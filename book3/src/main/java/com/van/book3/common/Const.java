@@ -5,6 +5,7 @@ package com.van.book3.common;
  * @date 2020/3/15 - 11:56
  */
 public class Const {
+    public static final String CACHE_CATEGORY="categoryCache";
     public static final String TOKEN_PREFIX="token_";
     public static final String CURRENT_USER = "CURRENT_USER";
     public static final String DOMAIN = "http://store.yangxiansheng.top/";
