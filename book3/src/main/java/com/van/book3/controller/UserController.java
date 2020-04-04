@@ -9,6 +9,7 @@ import com.van.book3.dto.LoginDTO;
 import com.van.book3.entity.User;
 import com.van.book3.exception.GlobalException;
 import com.van.book3.service.UserService;
+import com.van.book3.serviceimpl.DailyAttendanceServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,8 @@ import javax.validation.constraints.NotEmpty;
 public class UserController {
     @Resource
     private UserService userService;
+    @Resource
+    private DailyAttendanceServiceImpl dailyAttendanceService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ServerResponse register(@Validated User user) {
@@ -39,6 +42,11 @@ public class UserController {
     @RequestMapping("/day")
     public ServerResponse getDay(String openId) {
         return userService.getDay(openId);
+    }
+    @RequestMapping("/attendance")
+    public ServerResponse attendance(HttpSession session){
+        String openId=(String) session.getAttribute(Const.CURRENT_USER);
+        return dailyAttendanceService.attendance(openId);
     }
 
 

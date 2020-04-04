@@ -16,6 +16,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(new AuthorityInterceptor()).addPathPatterns("/shelf/**/**")
         .addPathPatterns("/user/**/**").excludePathPatterns("/user/register","/user/login.do","/user/forget_password.do","/user/forget_reset_password.do")
         .addPathPatterns("/rank/**/**")
+        .addPathPatterns("/review/**/**").excludePathPatterns("/review/list")
         ;
         super.addInterceptors(registry);
     }

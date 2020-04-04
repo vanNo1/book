@@ -47,7 +47,7 @@ public class AssembleVO {
         bookVO.setRootFile(book.getRootFile());
         bookVO.setOpf(Const.DOMAIN + book.getUnzipPath() + book.getFileName() + "/" + book.getRootFile());
         bookVO.setTitle(book.getTitle());
-        bookVO.setRank(rankService.rank(openId));
+        bookVO.setRank(rankService.rank(openId,book.getFileName()));
         bookVO.setRankAvg(rankService.rankAvg(book.getFileName()));
         bookVO.setRankNum(rankService.rankNum(book.getFileName()));
         bookVO.setReaderNum(shelfService.findPeopleNum(book.getFileName()));

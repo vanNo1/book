@@ -57,12 +57,13 @@ public class RankServiceImpl implements RankService {
 
     }
 
-    public Integer rank(String openId) {
+    public Integer rank(String openId,String fileName) {
         if (openId == null) {
             return null;
         }
         Map map = new HashMap();
         map.put("open_id", openId);
+        map.put("file_name", fileName);
         List<Rank> rankList = rankMapper.selectByMap(map);
         if (rankList.size() > 0) {
             return rankList.get(0).getRank();

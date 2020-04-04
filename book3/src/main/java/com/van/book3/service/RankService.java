@@ -13,7 +13,7 @@ import java.util.List;
 public interface RankService {
     ServerResponse save(String fileName, Integer rank, String openId);
 
-    Integer rank(String openId);
+    Integer rank(String openId,String fileName);
 
     double rankAvg(String fileName);
 
