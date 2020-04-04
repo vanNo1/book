@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Van
@@ -67,5 +69,14 @@ public class HotBookServiceImpl implements HotBookService {
             hotBookVOList.add(hotBookVO);
         }
         return ServerResponse.success("查询成功", hotBookVOList);
+    }
+    public int readerCount(String fileName){
+        Map map=new HashMap();
+        map.put("file_name",fileName);
+        List<HotBook>hotBookList=hotBookMapper.selectByMap(map);
+        if (hotBookList.size()==0){
+            return 0;
+        }
+        return hotBookList.size();
     }
 }

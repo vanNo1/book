@@ -1,21 +1,17 @@
 package com.van.book3.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.collect.Sets;
 import com.van.book3.common.CodeMsg;
 import com.van.book3.common.Const;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.BookMapper;
 import com.van.book3.entity.Book;
 import com.van.book3.entity.History;
-import com.van.book3.entity.Rank;
 import com.van.book3.exception.GlobalException;
 import com.van.book3.service.BookService;
-import com.van.book3.service.RankService;
-import com.van.book3.utils.AssembleVO;
+import com.van.book3.utils.AssembleVOUtil;
 import com.van.book3.utils.RandomUtil;
 import com.van.book3.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +32,7 @@ public class BookServiceImpl implements BookService {
     @Resource
     private ShelfServiceImpl shelfService;
     @Resource
-    private AssembleVO assembleVO;
+    private AssembleVOUtil assembleVOUtil;
     @Resource
     private RankServiceImpl rankService;
     @Resource
@@ -46,6 +42,16 @@ public class BookServiceImpl implements BookService {
     @Resource
     private HistoryServiceImpl historyService;
 
+    public ServerResponse selectBookDetailV2(String fileName){
+        Map map=new HashMap();
+        map.put("file_name",fileName);
+        List<Book>bookList=bookMapper.selectByMap(map);
+        if (bookList.size()==0){
+            throw new GlobalException(CodeMsg.BOOK_NOT_EXIST);
+        }
+        BookVO2 bookVO2=assembleVOUtil.assembleBookVO2(bookList.get(0));
+        return ServerResponse.success("获取成功",bookVO2);
+    }
     public Book selectBookByFileName(String fileName) {
         Map map = new HashMap();
         map.put("file_name", fileName);
@@ -65,7 +71,7 @@ public class BookServiceImpl implements BookService {
             history.setFileName(fileName);
             historyService.insert(history);
         }
-        BookVO bookVO = assembleVO.assembleBookVO(book, openId);
+        BookVO bookVO = assembleVOUtil.assembleBookVO(book, openId);
         if (bookVO == null) {
             return ServerResponse.error("获取失败,查无此书");
         } else {
@@ -79,7 +85,7 @@ public class BookServiceImpl implements BookService {
         List<BookSimplyVO> bookList = new ArrayList<>();
         for (Integer bookId : books) {
             Book book = bookMapper.selectById(bookId);
-            bookList.add(AssembleVO.assembleBookSimplyVO(book));
+            bookList.add(AssembleVOUtil.assembleBookSimplyVO(book));
         }
         return ServerResponse.success("查询成功", bookList);
 
@@ -93,7 +99,7 @@ public class BookServiceImpl implements BookService {
         List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
         //bookList have only three books
         for (Book book : bookList) {
-            BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(book);
+            BookSimplyVO bookSimplyVO = AssembleVOUtil.assembleBookSimplyVO(book);
             bookSimplyVOList.add(bookSimplyVO);
         }
         return ServerResponse.success("查询成功", bookSimplyVOList);
@@ -113,7 +119,7 @@ public class BookServiceImpl implements BookService {
         }
         List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
         for (Book book : bookList) {
-            BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(book);
+            BookSimplyVO bookSimplyVO = AssembleVOUtil.assembleBookSimplyVO(book);
             bookSimplyVOList.add(bookSimplyVO);
         }
         return ServerResponse.success("查询成功", bookSimplyVOList);
@@ -137,7 +143,7 @@ public class BookServiceImpl implements BookService {
         List<Book> bookList = bookMapper.selectList(queryWrapper);
         List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
         for (Book book : bookList) {
-            BookSimplyVO bookSimplyVO = AssembleVO.assembleBookSimplyVO(book);
+            BookSimplyVO bookSimplyVO = AssembleVOUtil.assembleBookSimplyVO(book);
             bookSimplyVOList.add(bookSimplyVO);
         }
         return ServerResponse.success("查询成功", bookSimplyVOList);

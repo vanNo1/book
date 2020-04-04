@@ -80,9 +80,10 @@ public class ReviewServiceImpl implements ReviewService {
         return ServerResponse.success("评论成功");
 
     }
-    public ServerResponse listReview(String fileName,int pageSize,int current){
+    public ServerResponse<List<Review>> listReview(String fileName,int pageSize,int current){
         Page<Review>page= new Page<>(current,pageSize,false);
         QueryWrapper<Review>queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("file_name",fileName);
         IPage iPage =reviewMapper.selectPage(page,queryWrapper);
         List<Review>reviews=iPage.getRecords();
 

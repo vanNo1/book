@@ -10,4 +10,5 @@ public interface HotBookService {
     int insert(String openId, String title, String fileName);
 
     ServerResponse hotSearch();
+    int readerCount(String fileName);
 }

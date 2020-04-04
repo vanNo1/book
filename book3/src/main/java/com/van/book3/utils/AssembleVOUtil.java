@@ -2,20 +2,14 @@ package com.van.book3.utils;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import com.van.book3.common.Const;
-import com.van.book3.entity.Book;
-import com.van.book3.entity.Rank;
-import com.van.book3.entity.Shelf;
-import com.van.book3.entity.User;
-import com.van.book3.serviceimpl.RankServiceImpl;
-import com.van.book3.serviceimpl.ShelfServiceImpl;
-import com.van.book3.serviceimpl.UserServiceImpl;
-import com.van.book3.vo.BookSimplyVO;
-import com.van.book3.vo.BookVO;
-import com.van.book3.vo.ReaderVO;
+import com.van.book3.entity.*;
+import com.van.book3.serviceimpl.*;
+import com.van.book3.vo.*;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,13 +17,19 @@ import java.util.List;
  * @date 2020/3/17 - 16:14
  */
 @Component
-public class AssembleVO {
+public class AssembleVOUtil {
     @Resource
     private UserServiceImpl userService;
     @Resource
     private RankServiceImpl rankService;
     @Resource
     private ShelfServiceImpl shelfService;
+    @Resource
+    private HotBookServiceImpl hotBookService;
+    @Resource
+    private IntroductionServiceImpl introductionService;
+    @Resource
+    private ReviewServiceImpl reviewService;
 
     public BookVO assembleBookVO(Book book, String openId) {
         if (book == null) {
@@ -47,10 +47,14 @@ public class AssembleVO {
         bookVO.setRootFile(book.getRootFile());
         bookVO.setOpf(Const.DOMAIN + book.getUnzipPath() + book.getFileName() + "/" + book.getRootFile());
         bookVO.setTitle(book.getTitle());
-        bookVO.setRank(rankService.rank(openId,book.getFileName()));
+        bookVO.setRank(rankService.rank(openId,book.getFileName()));//current user's rank
         bookVO.setRankAvg(rankService.rankAvg(book.getFileName()));
         bookVO.setRankNum(rankService.rankNum(book.getFileName()));
         bookVO.setReaderNum(shelfService.findPeopleNum(book.getFileName()));
+        //assemble readerVO
+
+
+
 
         List<Shelf> shelfList = shelfService.getAllShelf(book.getFileName());
         if (shelfList == null) {
@@ -89,6 +93,52 @@ public class AssembleVO {
         bookSimplyVO.setRootFile(book.getRootFile());
         bookSimplyVO.setTitle(book.getTitle());
         return bookSimplyVO;
+    }
+
+    public BookVO2 assembleBookVO2(Book book){
+        BookVO2 bookVO2=new BookVO2();
+
+        //hotBook:how many people have have read this book before(hot_book)
+        int readerCount=hotBookService.readerCount(book.getFileName());
+        bookVO2.setReaderNum(readerCount);
+        //rank
+        bookVO2.setRankNum(rankService.rankNum(book.getFileName()));
+        bookVO2.setRankAvg(rankService.rankAvg(book.getFileName()));
+        //introduction
+        Introduction introduction= introductionService.getIntroduction(book.getFileName()).getData();
+        bookVO2.setContent(introduction.getContent());
+        bookVO2.setAuthorIntroduction(introduction.getAuthor());
+        //review
+        List<Review>reviews=reviewService.listReview(book.getFileName(),6,1).getData();
+        bookVO2.setReviewVOS(assembleReviewVO(reviews));
+        //book
+        bookVO2.setId(book.getId());
+        bookVO2.setFileName(book.getFileName());
+        bookVO2.setCover(book.getCover());
+        bookVO2.setTitle(book.getTitle());
+        bookVO2.setAuthor(book.getAuthor());
+        bookVO2.setPublisher(book.getPublisher());
+        bookVO2.setBookId(book.getFileName());
+        bookVO2.setCategory(book.getCategory());
+        bookVO2.setCategoryText(book.getCategoryText());
+        bookVO2.setLanguage(book.getLanguage());
+        bookVO2.setRootFile(book.getRootFile());
+        return bookVO2;
+
+    }
+    public List<ReviewVO> assembleReviewVO(List<Review> reviews){
+        List<ReviewVO> reviewVOS=new ArrayList<>();
+        for (Review review : reviews) {
+            ReviewVO reviewVO=new ReviewVO();
+            reviewVO.setAvatarUrl(review.getAvatarUrl());
+            reviewVO.setFileName(review.getFileName());
+            reviewVO.setRank(review.getRank());
+            reviewVO.setTitle(review.getTitle());
+            reviewVO.setSummary(review.getSummary());
+            reviewVO.setUpdateTime(review.getUpdateTime());
+            reviewVOS.add(reviewVO);
+        }
+        return reviewVOS;
     }
 
 }

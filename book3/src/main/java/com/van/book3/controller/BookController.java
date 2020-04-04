@@ -8,6 +8,7 @@ import com.van.book3.entity.HotBook;
 import com.van.book3.serviceimpl.BookServiceImpl;
 import com.van.book3.serviceimpl.HotBookServiceImpl;
 import com.van.book3.serviceimpl.HotSearchServiceImpl;
+import com.van.book3.serviceimpl.IntroductionServiceImpl;
 import com.van.book3.utils.LoginUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
@@ -27,16 +29,26 @@ import java.io.Serializable;
 @Validated
 public class BookController {
     @Resource
+    private IntroductionServiceImpl introductionService;
+    @Resource
     private HotBookServiceImpl hotBookService;
     @Resource
     private BookServiceImpl bookService;
     @Resource
     private HotSearchServiceImpl hotSearchService;
+    @RequestMapping("/introduction")
+    public ServerResponse introduction(@NotEmpty String fileName){
+        return introductionService.getIntroduction(fileName);
+    }
 
     @RequestMapping("/detail.do")
     public ServerResponse detail(String fileName, String openId) {
 
         return bookService.getDetail(openId, fileName);
+    }
+    @RequestMapping("/v2/detail.do")
+    public ServerResponse detail2(@NotEmpty String fileName){
+        return bookService.selectBookDetailV2(fileName);
     }
 
     //搜索

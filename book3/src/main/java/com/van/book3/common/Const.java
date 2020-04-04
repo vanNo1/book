@@ -13,6 +13,7 @@ public class Const {
     public static final Integer DUPLICATE = 11;//some key is duplicate
     public static final Integer ISNULL = 5;//some param is null
     public static final Integer SYSTEMERROR = -1;//system error
+    public static final String  WAIT_TO_ADD_INTRODUCTION="待添加记录....";
 
     public interface ServerResponse {
         public static final int SUCCESS_CODE = 0;
