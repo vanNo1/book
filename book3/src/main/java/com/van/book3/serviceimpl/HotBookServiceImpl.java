@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.HotBookMapper;
+import com.van.book3.entity.Book;
 import com.van.book3.entity.HotBook;
 import com.van.book3.service.HotBookService;
 import com.van.book3.utils.RandomUtil;
@@ -29,6 +30,8 @@ import java.util.Map;
 public class HotBookServiceImpl implements HotBookService {
     @Resource
     private HotBookMapper hotBookMapper;
+    @Resource
+    private BookServiceImpl bookService;
 
     public int insert(String openId, String title, String fileName) {
         HotBook hotBook = new HotBook();
@@ -79,4 +82,25 @@ public class HotBookServiceImpl implements HotBookService {
         }
         return hotBookList.size();
     }
+    public List<Book> hotBookThree(String openId){
+        QueryWrapper<HotBook>queryWrapper=new QueryWrapper<>();
+        queryWrapper.select("count(*) as nums,open_id,file_name,title")
+                .eq("open_id",openId)
+                .groupBy("file_name")
+                .orderByDesc("nums");
+        Page<HotBook>page=new Page<>(1,3);
+        IPage iPage=hotBookMapper.selectPage(page,queryWrapper);
+        List<HotBook>hotBookList=iPage.getRecords();
+        //if this user have on history
+        if (hotBookList.size()==0){
+            return null;
+        }
+        List<Book>bookList=new ArrayList<>();
+        for (HotBook hotBook : hotBookList) {
+            Book book=bookService.selectBookByFileName(hotBook.getFileName());
+            bookList.add(book);
+        }
+            return bookList;
+    }
+
 }

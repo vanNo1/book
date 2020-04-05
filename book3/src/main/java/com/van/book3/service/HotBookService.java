@@ -1,6 +1,9 @@
 package com.van.book3.service;
 
 import com.van.book3.common.ServerResponse;
+import com.van.book3.entity.Book;
+
+import java.util.List;
 
 /**
  * @author Van
@@ -11,4 +14,5 @@ public interface HotBookService {
 
     ServerResponse hotSearch();
     int readerCount(String fileName);
+    List<Book> hotBookThree(String openId);
 }

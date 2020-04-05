@@ -97,6 +97,26 @@ public class RankServiceImpl implements RankService {
         }
     }
 
+    public List<Book> getHighRankBookByCategory(int category,int rank,int size){
+        QueryWrapper<Rank>rankQueryWrapper=new QueryWrapper<>();
+        rankQueryWrapper.select("count(*) as nums,file_name,open_id,rank")
+                .eq("rank",rank).eq("category",category).groupBy("file_name")
+                .orderByDesc("nums");
+        Page<Rank>rankPage=new Page<>(1,size,false);
+        IPage<Rank> iPage =rankMapper.selectPage(rankPage,rankQueryWrapper);
+        List<Rank> rankList=iPage.getRecords();
+        List<String> bookNameList = new ArrayList<>();
+        for (Rank rankItem : rankList) {
+            bookNameList.add(rankItem.getFileName());
+        }
+        //...........................in bookNameList
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.in("file_name", bookNameList);
+        List<Book> bookList = bookMapper.selectList(queryWrapper);
+        return bookList;
+    }
+
+
     public List<Book> getHighRankBook(int rank) {
         //get all the names
 

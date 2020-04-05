@@ -67,4 +67,6 @@ public class CategoryServiceImpl implements CategoryService {
         RedisPoolUtil.set(Const.CACHE_CATEGORY,categoryCache);
         return ServerResponse.success("查询成功", categoryVOList);
     }
+
+
 }

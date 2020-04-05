@@ -2,23 +2,24 @@ package com.van.book3.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 /**
  * @author Van
- * @date 2020/3/17 - 12:09
+ * @date 2020/4/5 - 14:23
  */
 @Data
-public class Rank {
-    @TableId
+public class BookList {
     private int id;
-    private String fileName;
     private String openId;
-    private Integer rank;
-    private int category;
+    @NotEmpty
+    private String bookList;
+    @NotEmpty
+    private String title;
+    private int likes;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)

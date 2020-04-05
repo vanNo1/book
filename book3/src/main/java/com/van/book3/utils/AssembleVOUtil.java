@@ -31,6 +31,17 @@ public class AssembleVOUtil {
     @Resource
     private ReviewServiceImpl reviewService;
 
+    public BookListVO assembleBookListVO(List<Book> books,BookList bookList){
+        BookListVO bookListVO=new BookListVO();
+        bookListVO.setOpenId(bookList.getOpenId());
+        bookListVO.setBookList(bookList.getBookList());
+        bookListVO.setTitle(bookList.getTitle());
+        bookListVO.setLikes(bookList.getLikes());
+        List<BookSimplyVO>bookSimplyVOList=assembleBookSimplyVOList(books);
+        bookListVO.setBooks(bookSimplyVOList);
+        return bookListVO;
+    }
+
     public BookVO assembleBookVO(Book book, String openId) {
         if (book == null) {
             return null;
@@ -93,6 +104,13 @@ public class AssembleVOUtil {
         bookSimplyVO.setRootFile(book.getRootFile());
         bookSimplyVO.setTitle(book.getTitle());
         return bookSimplyVO;
+    }
+    public List<BookSimplyVO>assembleBookSimplyVOList(List<Book>books){
+        List<BookSimplyVO> bookSimplyVOList=new ArrayList<>();
+        for (Book book : books) {
+            bookSimplyVOList.add(AssembleVOUtil.assembleBookSimplyVO(book));
+        }
+        return bookSimplyVOList;
     }
 
     public BookVO2 assembleBookVO2(Book book){

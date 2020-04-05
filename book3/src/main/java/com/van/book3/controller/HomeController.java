@@ -1,6 +1,7 @@
 package com.van.book3.controller;
 
 
+import com.van.book3.common.Const;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.serviceimpl.BookServiceImpl;
 import com.van.book3.serviceimpl.HotSearchServiceImpl;
@@ -26,6 +27,11 @@ public class HomeController {
     @RequestMapping(value = {"/recommend/v2", "freeRead/v2"})
     public ServerResponse recommend() {
         return bookService.recomment();
+    }
+    @RequestMapping("/recommend.v2")
+    public ServerResponse recommend2(HttpSession session){
+        String openId=(String) session.getAttribute(Const.CURRENT_USER);
+        return bookService.recommendV2(openId);
     }
 
     @RequestMapping("/hotBook/v2")

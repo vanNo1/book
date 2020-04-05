@@ -74,4 +74,5 @@ public class BookController {
 
         return hotBookService.hotSearch();
     }
+
 }

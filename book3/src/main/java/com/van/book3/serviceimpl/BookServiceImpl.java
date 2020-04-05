@@ -9,6 +9,7 @@ import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.BookMapper;
 import com.van.book3.entity.Book;
 import com.van.book3.entity.History;
+import com.van.book3.entity.User;
 import com.van.book3.exception.GlobalException;
 import com.van.book3.service.BookService;
 import com.van.book3.utils.AssembleVOUtil;
@@ -41,7 +42,17 @@ public class BookServiceImpl implements BookService {
     private HotSearchServiceImpl hotSearchService;
     @Resource
     private HistoryServiceImpl historyService;
+    @Resource
+    private UserServiceImpl userService;
+    @Resource
+    private HotBookServiceImpl hotBookService;
 
+    public List<Book> selectBooks(List<String>fileNameList){
+        QueryWrapper<Book>queryWrapper=new QueryWrapper<>();
+        queryWrapper.in("file_name",fileNameList);
+        List<Book> bookList=bookMapper.selectList(queryWrapper);
+        return bookList;
+    }
     public ServerResponse selectBookDetailV2(String fileName){
         Map map=new HashMap();
         map.put("file_name",fileName);
@@ -89,6 +100,32 @@ public class BookServiceImpl implements BookService {
         }
         return ServerResponse.success("查询成功", bookList);
 
+    }
+    public ServerResponse<List<BookSimplyVO>> recommendV2(String openId){
+        //if openId is null, then recommend three random books
+        if (openId==null){
+            return recomment();
+        }
+        List<Book>bookList=hotBookService.hotBookThree(openId);
+        //if openId is not null,but he don't have history
+        if (bookList==null){
+            return recomment();
+        }
+        //the user have history, default history is three ,but it can be less
+        List<BookSimplyVO>hotBookList=new ArrayList<>();
+        int i=4;
+        for (Book book : bookList) {
+            List<Book>bookList1=rankService.getHighRankBookByCategory(book.getCategory(),5,--i);
+            //if this category don't have Book which rank is 5 then continue
+            if (bookList1.size()==0){
+                continue;
+            }
+            //if have high rank book then add to list
+            for (Book book1 : bookList1) {
+                hotBookList.add(AssembleVOUtil.assembleBookSimplyVO(book1));
+            }
+        }
+        return ServerResponse.success("获取成功",hotBookList);
     }
 
     //select three books which rank is 5 score

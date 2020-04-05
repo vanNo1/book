@@ -43,7 +43,11 @@ public class CodeMsg {
     public static CodeMsg RANK_SAVE_FAIL=new CodeMsg(500501,"评分保存失败");
 
 
-
+    //bookList 5006xx
+    public static CodeMsg BOOK_LIST_NOT_EXIST=new CodeMsg(500601,"书单不存在");
+    public static CodeMsg BOOK_LIST_DUPLICATE=new CodeMsg(500602,"书单已存在");
+    public static CodeMsg BOOK_LIST_BOOK_DUPLICATE=new CodeMsg(500603,"该书籍在该书单中已存在");
+    public static CodeMsg BOOK_LIST_BOOK_NOT_EXIST=new CodeMsg(500603,"该书籍在该书单中不存在");
 
 
     CodeMsg(int code,String msg){

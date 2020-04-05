@@ -20,4 +20,5 @@ public interface RankService {
     int rankNum(String fileName);
 
     List<Book> getHighRankBook(int rank);
+    List<Book> getHighRankBookByCategory(int category,int rank,int size);
 }
