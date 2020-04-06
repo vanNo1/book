@@ -50,7 +50,7 @@ public class AssembleVOUtil {
         bookVO.setAuthor(book.getAuthor());
         bookVO.setCategory(book.getCategory());
         bookVO.setCategoryText(book.getCategoryText());
-        bookVO.setCover(book.getCover());
+        bookVO.setCover(Const.DOMAIN_IMG+book.getCover());
         bookVO.setFileName(book.getFileName());
         bookVO.setId(book.getId());
         bookVO.setLanguage(book.getLanguage());
@@ -96,7 +96,7 @@ public class AssembleVOUtil {
         bookSimplyVO.setBookId(book.getFileName());
         bookSimplyVO.setCategory(book.getCategory());
         bookSimplyVO.setCategoryText(book.getCategoryText());
-        bookSimplyVO.setCover(book.getCover());
+        bookSimplyVO.setCover(Const.DOMAIN_IMG+book.getCover());
         bookSimplyVO.setFileName(book.getFileName());
         bookSimplyVO.setId(book.getId());
         bookSimplyVO.setLanguage(book.getLanguage());
@@ -132,7 +132,7 @@ public class AssembleVOUtil {
         //book
         bookVO2.setId(book.getId());
         bookVO2.setFileName(book.getFileName());
-        bookVO2.setCover(book.getCover());
+        bookVO2.setCover(Const.DOMAIN_IMG+book.getCover());
         bookVO2.setTitle(book.getTitle());
         bookVO2.setAuthor(book.getAuthor());
         bookVO2.setPublisher(book.getPublisher());

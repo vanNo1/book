@@ -66,7 +66,7 @@ public class BookController {
         if (publisher == null && author == null && category == null && categoryId == null) {
             return ServerResponse.error("参数有误");
         }
-        return bookService.searchList(publisher, category, categoryId, author);
+        return bookService.searchList(publisher, category, categoryId, author,page,pageSize);
     }
 
     @RequestMapping("/hot-search")

@@ -42,7 +42,7 @@ public class ShelfServiceImpl implements ShelfService {
         shelfVO.setBookId(book.getId());
         shelfVO.setCategory(book.getCategory());
         shelfVO.setCategoryText(book.getCategoryText());
-        shelfVO.setCover(book.getCover());
+        shelfVO.setCover(Const.DOMAIN_IMG+book.getCover());
         shelfVO.setDate(book.getCreateTime());
         shelfVO.setFileName(book.getFileName());
         shelfVO.setId(shelf.getId());

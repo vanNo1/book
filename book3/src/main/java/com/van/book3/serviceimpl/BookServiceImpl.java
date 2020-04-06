@@ -163,7 +163,7 @@ public class BookServiceImpl implements BookService {
     }
 
     //select by publisher category categoryId author
-    public ServerResponse searchList(String publisher, String category, Integer categoryId, String author) {
+    public ServerResponse searchList(String publisher, String category, Integer categoryId, String author,int page,int pageSize) {
         QueryWrapper<Book> queryWrapper = new QueryWrapper();
         if (publisher != null) {
             queryWrapper.like("publisher", publisher);
@@ -177,7 +177,9 @@ public class BookServiceImpl implements BookService {
         if (author != null) {
             queryWrapper.like("author", author);
         }
-        List<Book> bookList = bookMapper.selectList(queryWrapper);
+        Page<Book>page1=new Page<>(page,pageSize);
+        IPage iPage=bookMapper.selectPage(page1,queryWrapper);
+        List<Book> bookList = iPage.getRecords();
         List<BookSimplyVO> bookSimplyVOList = new ArrayList<>();
         for (Book book : bookList) {
             BookSimplyVO bookSimplyVO = AssembleVOUtil.assembleBookSimplyVO(book);
@@ -224,13 +226,7 @@ public class BookServiceImpl implements BookService {
         //todo hotsearch
         HotSearchVO hotSearchVO = hotSearchService.getHotSearchVO();
         homeVO.setHotSearch(hotSearchVO);
-        //bannerVO
-        BannerVO bannerVO = new BannerVO();
-        bannerVO.setImg("https://www.youbaobao.xyz/book/res/bg.jpg");
-        bannerVO.setSubTitle("马上学习");
-        bannerVO.setTitle("mpvue2.0多端小程序课程重磅上线");
-        bannerVO.setUrl("https://www.youbaobao.xyz/book/#/book-store/shelf");
-        homeVO.setBanenr(bannerVO);
+
 
         return ServerResponse.success("查询成功", homeVO);
     }

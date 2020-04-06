@@ -21,8 +21,7 @@ public class HomeVO {
     private List<BookSimplyVO> freeRead;
     //HotSearchVO
     private HotSearchVO hotSearch;
-    //bannerVO
-    private BannerVO banenr;
+
     private List<ShelfVO> shelf;
     private int shelfCount;
 

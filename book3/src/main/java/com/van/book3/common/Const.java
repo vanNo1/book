@@ -9,6 +9,7 @@ public class Const {
     public static final String TOKEN_PREFIX="token_";
     public static final String CURRENT_USER = "CURRENT_USER";
     public static final String DOMAIN = "http://store.yangxiansheng.top/";
+    public static final String DOMAIN_IMG="http://store.yangxiansheng.top/img";
     public static final Integer MAXBOOKS = 500;
     public static final Integer DUPLICATE = 11;//some key is duplicate
     public static final Integer ISNULL = 5;//some param is null

@@ -21,6 +21,6 @@ public interface BookService {
 
     ServerResponse search(String keyword, int page, int pageSize);
 
-    ServerResponse searchList(String publisher, String category, Integer categoryId, String author);
+    ServerResponse searchList(String publisher, String category, Integer categoryId, String author,int page,int pageSize);
     ServerResponse<List<BookSimplyVO>> recommendV2(String openId);
 }
