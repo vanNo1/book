@@ -40,10 +40,21 @@ public class RankServiceImpl implements RankService {
     private BookServiceImpl bookService;
 
     public ServerResponse save(String fileName, Integer rank, String openId) {
+        //if don't have this book
         Book book=bookService.selectBookByFileName(fileName);
         if (book==null){
             throw new GlobalException(CodeMsg.BOOK_NOT_EXIST);
         }
+        //if user have ranked before
+        Map map=new HashMap();
+        map.put("file_name",fileName);
+        map.put("open_id",openId);
+        List<Rank> rankList=rankMapper.selectByMap(map);
+        if (rankList.size()!=0){
+            rankMapper.updateById(rankList.get(0));
+            return ServerResponse.success("更新评论成功");
+        }
+        //if user have not rank before
         Rank userRank = new Rank();
         userRank.setFileName(fileName);
         userRank.setOpenId(openId);
