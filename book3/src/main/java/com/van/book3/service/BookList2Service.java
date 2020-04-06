@@ -9,6 +9,6 @@ import com.van.book3.common.ServerResponse;
 public interface BookList2Service {
     ServerResponse addBook(String bookList, String fileName, String openId);
     ServerResponse deleteBook(String bookList,String fileName,String openId);
-    ServerResponse showBookList(String bookList);
+    ServerResponse showBookList(String bookList,int current,int pageSize);
 
 }

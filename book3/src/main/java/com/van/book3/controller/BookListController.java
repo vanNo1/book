@@ -8,6 +8,7 @@ import com.van.book3.serviceimpl.BookListLikeServiceImpl;
 import com.van.book3.serviceimpl.BookListServiceImpl;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -29,9 +30,14 @@ public class BookListController {
     private BookListServiceImpl bookListService;
     @Resource
     private BookListLikeServiceImpl bookListLikeService;
+    @RequestMapping("/deleteBookList")
+    public ServerResponse deleteBookList(@NotEmpty String  bookList,HttpSession session){
+        String openId=(String) session.getAttribute(Const.CURRENT_USER);
+        return bookListService.deleteBookListByName(openId,bookList);
+    }
     @RequestMapping("/showBookList")
-    public ServerResponse showBookList(@NotEmpty String bookList){
-        return bookList2Service.showBookList(bookList);
+    public ServerResponse showBookList(@NotEmpty String bookList, @RequestParam(defaultValue = "1")int current,@RequestParam(defaultValue = "6")int pageSize){
+        return bookList2Service.showBookList(bookList,current,pageSize);
     }
     @RequestMapping("/deleteBook")
     public ServerResponse deleteBook(HttpSession session,@NotEmpty String bookList,@NotEmpty String fileName){

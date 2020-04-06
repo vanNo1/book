@@ -21,6 +21,16 @@ import java.util.Map;
 public class BookListServiceImpl implements BookListService {
     @Resource
     private BookListMapper bookListMapper;
+    public ServerResponse deleteBookListByName(String openId,String bookList){
+        Map map=new HashMap();
+        map.put("book_list",bookList);
+        map.put("open_id",openId);
+        int count= bookListMapper.deleteByMap(map);
+        if (count==0){
+            return ServerResponse.error("删除书单不成功");
+        }
+        return ServerResponse.success("删除书单成功");
+    }
     public BookList selectBookListByName(String bookList){
         Map map=new HashMap();
         map.put("book_list",bookList);

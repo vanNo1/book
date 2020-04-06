@@ -1,5 +1,8 @@
 package com.van.book3.serviceimpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.van.book3.common.CodeMsg;
 import com.van.book3.common.ServerResponse;
 import com.van.book3.dao.BookList2Mapper;
@@ -70,14 +73,18 @@ public class BookList2ServiceImpl implements BookList2Service {
         bookList2Mapper.deleteById(bookList2s.get(0).getId());
         return ServerResponse.success("删除成功");
     }
-    public ServerResponse showBookList(String bookList){
+    public ServerResponse showBookList(String bookList,int current,int pageSize){
         Map map=new HashMap();
         map.put("book_list",bookList);
         BookList bookList1=bookListService.selectBookListByName(bookList);
         if (bookList1==null){
             throw new GlobalException(CodeMsg.BOOK_LIST_NOT_EXIST);
         }
-        List<BookList2>bookList2s= bookList2Mapper.selectByMap(map);
+        QueryWrapper  queryWrapper=new QueryWrapper();
+        queryWrapper.eq("book_list",bookList);
+        Page<BookList2>bookList2Page=new Page<>(current,pageSize);
+        IPage<BookList2>iPage=bookList2Mapper.selectPage(bookList2Page,queryWrapper);
+        List<BookList2>bookList2s= iPage.getRecords();
         List<String>fileNameList=new ArrayList<>();
         //collect all the book's name which in the book_list2
         for (BookList2 bookList2 : bookList2s) {

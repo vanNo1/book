@@ -24,7 +24,7 @@ public class HomeController {
     @Resource
     private BookServiceImpl bookService;
 
-    @RequestMapping(value = {"/recommend/v2", "freeRead/v2"})
+    @RequestMapping(value = {"/recommend/v2", "freeRead"})
     public ServerResponse recommend() {
         return bookService.recomment();
     }

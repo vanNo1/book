@@ -8,18 +8,20 @@ import com.van.book3.serviceimpl.BookServiceImpl;
 import com.van.book3.serviceimpl.ContentServiceImpl;
 import com.van.book3.serviceimpl.HotBookServiceImpl;
 import com.van.book3.utils.LoginUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * @author Van
  * @date 2020/3/18 - 10:15
  */
 @RestController
-
+@Validated
 public class ContentController {
     @Resource
     private ContentServiceImpl contentService;
@@ -29,7 +31,7 @@ public class ContentController {
     private HotBookServiceImpl hotBookService;
 
     @RequestMapping("/contents")
-    public ServerResponse content(String fileName, HttpSession session) {
+    public ServerResponse content(@NotEmpty String fileName, HttpSession session) {
         if (LoginUtil.isLogin(session)) {
             Book book = bookService.selectBookByFileName(fileName);
             if (book==null){
